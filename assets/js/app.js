@@ -25,6 +25,11 @@ var app = {
 		cardModale.querySelectorAll(".close").forEach((modale) => {
 			modale.addEventListener("click", app.hideCardModals);
 		});
+
+		const editLists = document.querySelectorAll("h2");
+		editLists.forEach((editList) => {
+			editList.addEventListener("dblclick", app.editList);
+		});
 	},
 	showAddCardModal(e) {
 		let listId = e.target.closest(".panel");
@@ -52,17 +57,21 @@ var app = {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		const inputData = formData.get("name");
+		const colorData = formData.get("color");
+		console.log(colorData);
 		const inputListId = formData.get("list-id");
-		app.makeCardInDOM(inputData, inputListId);
+		app.makeCardInDOM(inputData, inputListId, colorData);
 		app.hideCardModals();
 	},
-	makeCardInDOM(inputData, inputListId) {
+	makeCardInDOM(inputData, inputListId, colorData) {
 		const list = document.querySelector(`[data-list-id="${inputListId}"]`);
 		const firstList = list.querySelector(".panel-block");
 		const template = document.querySelector(".newCard");
 		const templateContent = template.content;
 		const clone = document.importNode(templateContent, true);
 		const title = clone.querySelector(".column");
+		clone.querySelector(".box").style.borderColor = colorData;
+		console.log(colorData);
 		title.textContent = inputData;
 
 		firstList.appendChild(clone);
@@ -81,9 +90,6 @@ var app = {
 
 			const response = await fetch(`${app.base_url}/lists`, {
 				method: "POST",
-				// headers: {
-				// 	"Content-Type": "application/json",
-				// },
 				body: formData,
 			});
 
@@ -159,11 +165,52 @@ var app = {
 				const title = clone.querySelector(".column");
 				title.textContent = card.content;
 				clone.querySelector(".box").dataset.cardId = card.id;
-				clone.querySelector(".box").style.backgroundColor = card.color;
+				clone.querySelector(".box").style.borderColor = card.color;
 
 				firstList.appendChild(clone);
 				app.addListenerToActions();
 			});
+		} catch (error) {
+			console.error(error);
+		}
+	},
+	async editList(e) {
+		const thisList = e.target.closest(".panel");
+		const title = thisList.querySelector("h2");
+		title.classList.add("is-hidden");
+		const form = thisList.querySelector("form");
+		form.classList.remove("is-hidden");
+		form.addEventListener("submit", app.updateListForm);
+	},
+	async updateListForm(e) {
+		try {
+			e.preventDefault();
+			const formData = new FormData(e.target);
+			const thisList = e.target.closest(".panel");
+			const title = thisList.querySelector("h2");
+			const form = thisList.querySelector("form");
+			const listId = thisList.dataset.listId;
+
+			const response = await fetch(`${app.base_url}/lists/${listId}`, {
+				method: "PATCH",
+				// headers: {
+				// 	Accept: "application/json",
+				// 	"Content-Type": "application/json",
+				// },
+				body: formData,
+			});
+
+			console.log(response);
+
+			if (!response.ok) {
+				title.classList.remove("is-hidden");
+				form.classList.add("is-hidden");
+				throw new Error("Problème avec le PATCH " + response.status);
+			}
+			const data = await response.json();
+			title.classList.remove("is-hidden");
+			form.classList.add("is-hidden");
+			title.textContent = formData.get("name");
 		} catch (error) {
 			console.error(error);
 		}
