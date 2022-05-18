@@ -78,12 +78,6 @@ var app = {
 		// 	console.log(value);
 	},
 	makeListInDOM(inputData) {
-		// const numberOfLists = document.querySelectorAll("[data-list-id]").length;
-		// const lastListAlpha = document
-		// 	.querySelectorAll("[data-list-id]")[0]
-		// 	.getAttribute("data-list-id");
-		// console.log(numberOfLists, lastListAlpha);
-		// const firstList = document.querySelector("[data-list-id='A']");
 		const lastColumn = document
 			.getElementById("addListButton")
 			.closest(".column");
@@ -95,30 +89,32 @@ var app = {
 		clone
 			.querySelector(".is-small.has-text-white")
 			.addEventListener("click", app.showAddCardModal);
-		// firstList.before(clone);
+
+		// const timestamp = new Date().getTime();
+		// clone.querySelector(".column").dataset.listId = timestamp;
 		lastColumn.before(clone);
 	},
-	async getAllLists() {
-		try {
-			const response = await fetch("http://localhost:5002/api/lists");
+	// async getAllLists() {
+	// 	try {
+	// 		const response = await fetch("http://localhost:5002/api/lists");
 
-			if (!response.ok) {
-				throw new Error("Impossible de récupérer les listes");
-			}
-			const data = await response.json();
-			data.forEach((list) => {
-				const firstList = document.querySelector("[data-list-id='A']");
-				const template = document.querySelector(".newList");
-				const templateContent = template.content;
-				const clone = document.importNode(templateContent, true);
-				const title = clone.querySelector(".has-text-white");
-				title.textContent = list.name;
-				firstList.before(clone);
-			});
-		} catch (error) {
-			console.log(error);
-		}
-	},
+	// 		if (!response.ok) {
+	// 			throw new Error("Impossible de récupérer les listes");
+	// 		}
+	// 		const data = await response.json();
+	// 		data.forEach((list) => {
+	// 			const firstList = document.querySelector("[data-list-id='A']");
+	// 			const template = document.querySelector(".newList");
+	// 			const templateContent = template.content;
+	// 			const clone = document.importNode(templateContent, true);
+	// 			const title = clone.querySelector(".has-text-white");
+	// 			title.textContent = list.name;
+	// 			firstList.before(clone);
+	// 		});
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 	}
+	// },
 };
 
 // on accroche un écouteur d'évènement sur le document : quand le chargement est terminé, on lance app.init
