@@ -2,8 +2,10 @@ var app = {
 	init: function () {
 		console.log("app.init !");
 		app.addListenerToActions();
-		app.getAllLists();
+		app.getListsFromAPI();
 	},
+
+	base_url: "http://localhost:5002/api",
 
 	addListenerToActions() {
 		const button = document.getElementById("addListButton");
@@ -94,27 +96,58 @@ var app = {
 		clone.querySelector(".column").dataset.listId = timestamp;
 		lastColumn.before(clone);
 	},
-	// async getAllLists() {
-	// 	try {
-	// 		const response = await fetch("http://localhost:5002/api/lists");
+	async getListsFromAPI() {
+		try {
+			const response = await fetch(`${app.base_url}/lists`);
 
-	// 		if (!response.ok) {
-	// 			throw new Error("Impossible de récupérer les listes");
-	// 		}
-	// 		const data = await response.json();
-	// 		data.forEach((list) => {
-	// 			const firstList = document.querySelector("[data-list-id='A']");
-	// 			const template = document.querySelector(".newList");
-	// 			const templateContent = template.content;
-	// 			const clone = document.importNode(templateContent, true);
-	// 			const title = clone.querySelector(".has-text-white");
-	// 			title.textContent = list.name;
-	// 			firstList.before(clone);
-	// 		});
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// },
+			if (!response.ok) {
+				throw new Error("Impossible de récupérer les listes");
+			}
+			const listsData = await response.json();
+			console.log(listsData);
+			listsData.forEach((list) => {
+				const lastColumn = document
+					.getElementById("addListButton")
+					.closest(".column");
+				const template = document.querySelector(".newList");
+				const templateContent = template.content;
+				const clone = document.importNode(templateContent, true);
+				const title = clone.querySelector(".has-text-white");
+				title.textContent = list.name;
+				clone.querySelector(".column").dataset.listId = list.id;
+
+				lastColumn.before(clone);
+				app.getCardsFromAPI(list.id);
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	},
+	async getCardsFromAPI(listId) {
+		try {
+			const response = await fetch(`${app.base_url}/cards`);
+			if (!response.ok) {
+				throw new Error("Impossible de récupérer les cartes");
+			}
+			const cardsData = await response.json();
+			const cardsInList = cardsData.filter((card) => card.list_id === listId);
+			cardsInList.forEach((card) => {
+				const list = document.querySelector(`[data-list-id="${listId}"]`);
+				const firstList = list.querySelector(".panel-block");
+				const template = document.querySelector(".newCard");
+				const clone = document.importNode(template.content, true);
+				const title = clone.querySelector(".column");
+				title.textContent = card.content;
+				clone.querySelector(".box").dataset.cardId = card.id;
+				clone.querySelector(".box").style.backgroundColor = card.color;
+
+				firstList.appendChild(clone);
+				app.addListenerToActions();
+			});
+		} catch (error) {
+			console.error(error);
+		}
+	},
 };
 
 // on accroche un écouteur d'évènement sur le document : quand le chargement est terminé, on lance app.init
