@@ -10,6 +10,7 @@ var app = {
 	addListenerToActions() {
 		const button = document.getElementById("addListButton");
 		button.addEventListener("click", app.showAddListModal);
+
 		const listModale = document.getElementById("addListModal");
 		listModale.querySelectorAll(".close").forEach((modale) => {
 			modale.addEventListener("click", app.hideModals);
@@ -58,26 +59,46 @@ var app = {
 		const modale = document.getElementById("addListModal");
 		modale.classList.add("is-active");
 	},
-	handleAddCardForm(e) {
-		e.preventDefault();
-		const formData = new FormData(e.target);
-		const inputData = formData.get("name");
-		const colorData = formData.get("color");
-		console.log(colorData);
-		const inputListId = formData.get("list-id");
-		app.makeCardInDOM(inputData, inputListId, colorData);
-		app.hideCardModals();
+	async handleAddCardForm(e) {
+		try {
+			e.preventDefault();
+			const formData = new FormData(e.target);
+			const newName = formData.get("content");
+			const colorData = formData.get("color");
+			const listId = formData.get("list-id");
+
+			const thisList = document.querySelector(`[data-list-id="${listId}"]`);
+			const newCardPosition = thisList.querySelectorAll(".box").length + 1;
+			formData.set("position", newCardPosition);
+			formData.set("list_id", listId);
+
+			const response = await fetch(`${app.base_url}/cards`, {
+				method: "POST",
+				body: formData,
+			});
+
+			if (!response.ok) {
+				throw new Error("Problème avec le POST" + response.status);
+			}
+			const data = await response.json();
+			console.log(newName);
+
+			app.makeCardInDOM(newName, listId, colorData, data.id);
+			app.hideCardModals();
+		} catch (error) {
+			console.error(error);
+		}
 	},
-	makeCardInDOM(inputData, inputListId, colorData) {
-		const list = document.querySelector(`[data-list-id="${inputListId}"]`);
+	makeCardInDOM(newName, listId, colorData, dataId) {
+		const list = document.querySelector(`[data-list-id="${listId}"]`);
 		const firstList = list.querySelector(".panel-block");
 		const template = document.querySelector(".newCard");
 		const templateContent = template.content;
 		const clone = document.importNode(templateContent, true);
 		const title = clone.querySelector(".column");
+		title.textContent = newName;
+		clone.querySelector(".box").dataset.cardId = dataId;
 		clone.querySelector(".box").style.borderColor = colorData;
-		console.log(colorData);
-		title.textContent = inputData;
 
 		firstList.appendChild(clone);
 		app.addListenerToActions();
