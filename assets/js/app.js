@@ -41,6 +41,11 @@ var app = {
 		deleteCards.forEach((deleteCard) => {
 			deleteCard.addEventListener("dblclick", app.deleteCard);
 		});
+
+		const deleteLists = document.querySelectorAll(".icon_list.has-text-danger");
+		deleteLists.forEach((deleteList) => {
+			deleteList.addEventListener("dblclick", app.deleteList);
+		});
 	},
 	showAddCardModal(e) {
 		let listId = e.target.closest(".panel");
@@ -102,6 +107,8 @@ var app = {
 		const clone = document.importNode(templateContent, true);
 		const title = clone.querySelector(".column");
 		title.textContent = newName;
+		const setListIdInCard = clone.querySelector("input[name='list-id']");
+		setListIdInCard.setAttribute("value", listId);
 		clone.querySelector(".box").dataset.cardId = dataId;
 		clone.querySelector(".box").style.borderColor = colorData;
 
@@ -193,6 +200,8 @@ var app = {
 				const clone = document.importNode(template.content, true);
 				const title = clone.querySelector(".column");
 				title.textContent = card.content;
+				const setListIdInCard = clone.querySelector("input[name='list-id']");
+				setListIdInCard.setAttribute("value", listId);
 				clone.querySelector(".box").dataset.cardId = card.id;
 				clone.querySelector(".box").style.borderColor = card.color;
 
@@ -298,6 +307,10 @@ var app = {
 
 			const thisCard = e.target.closest(".box");
 			cardId = thisCard.dataset.cardId;
+			//* soit en récup listid et on getCardsFromAPI
+			// const thisListId = thisCard.querySelector("input[name='list-id']").value;
+			//* soit on supprime directement la card en js
+			const parent = thisCard.closest(".panel-block");
 
 			const response = await fetch(`${app.base_url}/cards/${cardId}`, {
 				method: "DELETE",
@@ -309,7 +322,36 @@ var app = {
 			if (!response.ok) {
 				throw new Error("Problème " + response.status);
 			}
+			parent.removeChild(thisCard);
 			return console.log(`Carte ${cardId} supprimée de la bdd`);
+		} catch (error) {
+			console.error(error);
+		}
+	},
+	async deleteList(e) {
+		try {
+			const confirmation = confirm(
+				"Voulez-vous vraiment supprimer cette liste ?"
+			);
+			if (!confirmation) return;
+
+			const thisList = e.target.closest(".panel");
+			const listId = thisList.dataset.listId;
+
+			const parent = thisList.closest(".card-lists");
+
+			const response = await fetch(`${app.base_url}/lists/${listId}`, {
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error("Problème " + response.status);
+			}
+			parent.removeChild(thisList);
+			return console.log(`Liste ${listId} supprimée de la bdd`);
 		} catch (error) {
 			console.error(error);
 		}
