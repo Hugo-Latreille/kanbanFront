@@ -68,16 +68,37 @@ var app = {
 		firstList.appendChild(clone);
 		app.addListenerToActions();
 	},
-	handleAddListForm(e) {
-		e.preventDefault();
-		// console.log(e.target[1].value);
-		const formData = new FormData(e.target);
-		const inputData = formData.get("name");
-		app.makeListInDOM(inputData);
-		app.hideModals();
+	async handleAddListForm(e) {
+		try {
+			e.preventDefault();
 
-		// for (const value of formData.values()) {
-		// 	console.log(value);
+			const formData = new FormData(e.target);
+			const inputData = formData.get("name");
+			const newListPosition =
+				document.querySelectorAll("[data-list-id]").length + 1;
+
+			formData.set("position", newListPosition);
+
+			const response = await fetch(`${app.base_url}/lists`, {
+				method: "POST",
+				// headers: {
+				// 	"Content-Type": "application/json",
+				// },
+				body: formData,
+			});
+
+			console.log(response);
+			if (!response.ok) {
+				throw new Error("Problème avec le POST" + response.status);
+			}
+
+			const data = await response.json();
+			console.log(data);
+			app.makeListInDOM(inputData);
+			app.hideModals();
+		} catch (error) {
+			console.error(error);
+		}
 	},
 	makeListInDOM(inputData) {
 		const lastColumn = document
@@ -104,7 +125,6 @@ var app = {
 				throw new Error("Impossible de récupérer les listes");
 			}
 			const listsData = await response.json();
-			console.log(listsData);
 			listsData.forEach((list) => {
 				const lastColumn = document
 					.getElementById("addListButton")
