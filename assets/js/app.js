@@ -30,6 +30,11 @@ var app = {
 		editLists.forEach((editList) => {
 			editList.addEventListener("dblclick", app.editList);
 		});
+
+		const editCards = document.querySelectorAll(".icon.has-text-primary");
+		editCards.forEach((editCard) => {
+			editCard.addEventListener("dblclick", app.editCard);
+		});
 	},
 	showAddCardModal(e) {
 		let listId = e.target.closest(".panel");
@@ -99,14 +104,13 @@ var app = {
 			}
 
 			const data = await response.json();
-			console.log(data);
-			app.makeListInDOM(inputData);
+			app.makeListInDOM(inputData, data.id);
 			app.hideModals();
 		} catch (error) {
 			console.error(error);
 		}
 	},
-	makeListInDOM(inputData) {
+	makeListInDOM(inputData, listId) {
 		const lastColumn = document
 			.getElementById("addListButton")
 			.closest(".column");
@@ -119,8 +123,7 @@ var app = {
 			.querySelector(".is-small.has-text-white")
 			.addEventListener("click", app.showAddCardModal);
 
-		const timestamp = new Date().getTime();
-		clone.querySelector(".column").dataset.listId = timestamp;
+		clone.querySelector(".column").dataset.listId = listId;
 		lastColumn.before(clone);
 	},
 	async getListsFromAPI() {
@@ -211,6 +214,51 @@ var app = {
 			title.classList.remove("is-hidden");
 			form.classList.add("is-hidden");
 			title.textContent = formData.get("name");
+		} catch (error) {
+			console.error(error);
+		}
+	},
+	editCard(e) {
+		const thisCard = e.target.closest(".box");
+		const title = thisCard.querySelector(".column");
+		title.classList.add("is-hidden");
+		const form = thisCard.querySelector("form");
+		form.classList.remove("is-hidden");
+		thisCard
+			.querySelector(".input.is-small")
+			.setAttribute("placeholder", title.textContent);
+		form.addEventListener("submit", app.updateCardForm);
+	},
+	async updateCardForm(e) {
+		try {
+			e.preventDefault();
+			const formData = new FormData(e.target);
+			const thisCard = e.target.closest(".box");
+			const title = thisCard.querySelector(".column");
+			const form = thisCard.querySelector("form");
+			const cardId = thisCard.dataset.cardId;
+
+			const response = await fetch(`${app.base_url}/cards/${cardId}`, {
+				method: "PATCH",
+				body: formData,
+			});
+			console.log(response);
+			if (!response.ok) {
+				title.classList.remove("is-hidden");
+				form.classList.add("is-hidden");
+				throw new Error("Problème avec le PATCH " + response.status);
+			}
+			const data = await response.json();
+			title.classList.remove("is-hidden");
+			form.classList.add("is-hidden");
+			title.textContent = formData.get("content");
+
+			const findNewColorResponse = await fetch(
+				`${app.base_url}/cards/${cardId}`
+			);
+			const findNewColorData = await findNewColorResponse.json();
+
+			thisCard.style.borderColor = findNewColorData.color;
 		} catch (error) {
 			console.error(error);
 		}
