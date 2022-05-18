@@ -1,9 +1,8 @@
-// on objet qui contient des fonctions
 var app = {
-	// fonction d'initialisation, lancée au chargement de la page
 	init: function () {
 		console.log("app.init !");
 		app.addListenerToActions();
+		app.getAllLists();
 	},
 
 	addListenerToActions() {
@@ -49,7 +48,6 @@ var app = {
 	},
 	handleAddCardForm(e) {
 		e.preventDefault();
-
 		const formData = new FormData(e.target);
 		const inputData = formData.get("name");
 		const inputListId = formData.get("list-id");
@@ -80,7 +78,15 @@ var app = {
 		// 	console.log(value);
 	},
 	makeListInDOM(inputData) {
-		const firstList = document.querySelector("[data-list-id='A']");
+		// const numberOfLists = document.querySelectorAll("[data-list-id]").length;
+		// const lastListAlpha = document
+		// 	.querySelectorAll("[data-list-id]")[0]
+		// 	.getAttribute("data-list-id");
+		// console.log(numberOfLists, lastListAlpha);
+		// const firstList = document.querySelector("[data-list-id='A']");
+		const lastColumn = document
+			.getElementById("addListButton")
+			.closest(".column");
 		const template = document.querySelector(".newList");
 		const templateContent = template.content;
 		const clone = document.importNode(templateContent, true);
@@ -89,7 +95,29 @@ var app = {
 		clone
 			.querySelector(".is-small.has-text-white")
 			.addEventListener("click", app.showAddCardModal);
-		firstList.before(clone);
+		// firstList.before(clone);
+		lastColumn.before(clone);
+	},
+	async getAllLists() {
+		try {
+			const response = await fetch("http://localhost:5002/api/lists");
+
+			if (!response.ok) {
+				throw new Error("Impossible de récupérer les listes");
+			}
+			const data = await response.json();
+			data.forEach((list) => {
+				const firstList = document.querySelector("[data-list-id='A']");
+				const template = document.querySelector(".newList");
+				const templateContent = template.content;
+				const clone = document.importNode(templateContent, true);
+				const title = clone.querySelector(".has-text-white");
+				title.textContent = list.name;
+				firstList.before(clone);
+			});
+		} catch (error) {
+			console.log(error);
+		}
 	},
 };
 
