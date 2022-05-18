@@ -90,8 +90,8 @@ var app = {
 			.querySelector(".is-small.has-text-white")
 			.addEventListener("click", app.showAddCardModal);
 
-		// const timestamp = new Date().getTime();
-		// clone.querySelector(".column").dataset.listId = timestamp;
+		const timestamp = new Date().getTime();
+		clone.querySelector(".column").dataset.listId = timestamp;
 		lastColumn.before(clone);
 	},
 	// async getAllLists() {
