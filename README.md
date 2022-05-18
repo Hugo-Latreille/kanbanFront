@@ -1,7 +1,115 @@
+# oKanban-front, jour 2
+
+## Dynamic data !
+
+C'est l'heure de brancher notre application sur les vrais données !
+
+#### Supprimer les fausses listes et les fausses cartes
+
+#### Récupérer les vraies listes
+
+Commence par ajouter une propriété `base_url` dans app. Sa valeur est l'url "de base" de ton API oKanban !
+
+Crée ensuite une méthode `getListsFromAPI` dans app. Pour faciliter la suite, cette fonction est `async`.
+
+Dans cette méthode, utilise [fetch](https://developer.mozilla.org/fr/docs/Web/API/Fetch_API/Using_Fetch) pour appeller la route "GET /lists" de l'api.
+
+Utilise le résultat de la requête fetch, ainsi que les fonctions développées hier, pour créer les vraies listes dans le DOM !
+
+<details>
+<summary>De l'aide</summary>
+
+Il faut `await` la réponse de fetch, mais il faut aussi `await response.json()` pour récupérer les données!
+
+</details>
+
+#### Mise à jour des détails
+
+Modifie les méthodes de app pour que l'attribut "data-list-id" des listes soit correct et corresponde aux données de l'API.
+
+## Des listes c'est bien, mais avec des cartes c'est mieux !
+
+Met en place le même principe que précedemment, pour afficher les vraies cartes !
+
+On a un léger souci : on ne récupère pas les cartes dans le endpoint "GET /lists".
+
+2 solutions :
+
+- faire une boucle pour appeler les routes "GET /lists/:id/cards"
+- modifier la route "GET /lists" pour qu'elle renvoie directement les cartes !
+
+A toi de voir !
+
+Au passage, il faut modifier `app.makeCardInDOM` pour changer l'attribut "data-card-id" des cartes, et aussi leur donner un "background-color" qui correpsond !
+
+## Save it baby !
+
+Modifie les méthodes `handleAddListForm` et `handleAddCardForm` :
+
+- Ces méthodes doivent être async.
+- Utilise fetch pour appeler les routes POST en envoyant les données du formulaire.
+- Utilise la réponse de fetch pour créer les listes/cartes, ou afficher une erreur (avec `alert`) si besoin.
+- Pense à tester le code de retour avec `response.status` (il DOIT être égal à 200, sinon on a une erreur).
+
+#### pourquoi j'ai pas de données ?!
+
+Tu as beau envoyer des données, rien n'apparrait côté back. C'est probablement dû au format dans lequel tu envoie les données !
+
+En effet, FormData utilise le format `multipart/form-data`. Or, ce format n'est pas géré par Express !
+
+Il faut rajouter un middleware dans l'api : [multer](https://github.com/expressjs/multer).
+
+<details>
+<summary>De l'aide pour multer</summary>
+
+```js
+const multer = require("multer");
+const bodyParser = multer();
+
+// on utlise .none() pour dire qu'on attends pas de fichier, uniquement des inputs "classiques" !
+app.use(bodyParser.none());
+```
+
+</details>
+
+## Éditer une liste
+
+Tu as du remarquer que dans chaque liste, à côté du `<h2>`, se cache un petit formulaire. Il est prévu pour éditer le nom des listes !
+
+Voici ce qu'il faut mettre en place :
+
+- Lorsqu'on double click sur un titre, on masque le `<h2>`, et on affiche le formulaire.
+- Lorsqu'on valide le formulaire (en tapant sur "Entrée"), on appelle l'API.
+- Si l'api renvoie une erreur, on ré-affiche le titre sans le modifier.
+- Si l'api renvoie un succès, on modifie le `<h2>`, et on le réaffiche.
+- Dans tous les cas, on masque le formulaire !
+
+<details>
+<summary>De l'aide</summary>
+
+- L'évènement pour un double click est "dblclick".
+- Pour afficher/masquer quelque chose, Bulma nous fournit la classe CSS "is-hidden".
+- Pour tout le reste, inspire toi de ce qui a été fait les jours précédents : récuperer un élément, lui ajouter un écouter, éviter le fonctionnement par défaut des events, ...
+- Et surtout, n'oublie pas de brancher toutes ces nouvelles intercations sur les éléments (listes et cartes) au moment de leur création !
+
+</details>
+
+## Éditer une carte
+
+Mets en place le même fonctionnement pour éditer les titres des cartes.
+
+Attention :
+
+- On ne clique pas sur le nom, mais sur l'icone "stylo" juste à côté.
+- Le formulaire n'existe pas... rajoute le dans le template !
+
+---
+
 # oKanban-front, jour 1
 
 ## Static force
 
+<<<<<<< HEAD
 Pour ce projet, nous n'allons pas utiliser de serveur !
 
 En effet, tout va se passer dans le navigateur, on va donc coder directement des fichiers statiques. Retour en S2, en quelques sortes !
@@ -11,12 +119,27 @@ Petit rappel, pour ouvrir le site dans un navigateur, utlise la ligne de command
 - `google-chrome index.html`
 - ou bien `chromium index.html`
 - ou encore `chromium-browser index.html`
-- ou bien encore `firefox index.html`
+- # ou bien encore `firefox index.html`
+  Pour ce projet, nous n'allons pas utiliser de serveur !
+
+En effet, tout va se passer dans le navigateur, on va donc coder directement des fichiers statiques. Retour en S2, en quelques sortes !
+
+Petit rappel, pour ouvrir le site dans un navigateur, utlise la ligne de commande :
+
+- `google-chrome index.html`
+- ou bien `chromium index.html`
+- ou encore `firefox index.html`
+  > > > > > > > 07236798d3a868b9ca78dabc42c354fe3d774de6
 - ou n'importe quel autre navigateur si ça te fait plaisir :wink:
 
 ## Prise en main du code
 
+<<<<<<< HEAD
 Commence par lire les fichiers fournis. L'intégration qui nous est proposée utilise le framework CSS Bulma.
+=======
+Commence par lire les fichiers fournis. L'intégration qui nous est proposée utilise le framework CSS Bulma.
+
+> > > > > > > 07236798d3a868b9ca78dabc42c354fe3d774de6
 
 [Pour commencer, un petit tour sur la doc ne fait jamais de mal](https://bulma.io/) !
 
@@ -26,21 +149,32 @@ Tu as du remarquer le bouton "ajouter une liste". Mais ce bouton... ne fait rien
 
 Tu as du aussi remarquer la présence d'une `<div class="modal">` dans le code.
 
->Une modale est une fenêtre fictive qui s'ouvre dans le navigateur par dessus le contenu courant, à la manière d'une popup.
+> Une modale est une fenêtre fictive qui s'ouvre dans le navigateur par dessus le contenu courant, à la manière d'une popup.
 
+<<<<<<< HEAD
 Il faut que lorsqu'on clique sur le bouton, la modale apparaisse. À toi de jouer !
+=======
+Il faut que lorsqu'on clique sur le bouton, la modale apparraise. À toi de jouer !
+
+> > > > > > > 07236798d3a868b9ca78dabc42c354fe3d774de6
 
 <details>
 <summary>De l'aide.</summary>
 
 - Commence par ajouter une méthode `addListenerToActions` dans l'objet app, puis appelle cette méthode dans `app.init`.
 - Dans cette méthode, récupère le bouton grace à `document.getElementById`, et ajoute-lui un écouteur d'évènement, sur l'event "click", et qui déclenche `app.showAddListModal`.
+  <<<<<<< HEAD
 - Il faut maintenant ajouter la méthode `showAddListModal` à l'objet app, et l'implémenter !
 - Dans la méthode `showAddListModal` :
   - Récupère la div modale, toujours grâce à `document.getElementById`
   - [La doc de Bulma](https://bulma.io/documentation/components/modal/) nous dit que pour afficher une modale, il faut lui ajouter la classe `is-active`.
-  
-</details>
+
+=======
+
+- Il faut maintenant ajouter la méthode `showAddListModal` à l'obet app, et l'implémenter !
+- Dans la méthode `showAddListModal` : - Récupère la div modale, toujours grâce à `document.getElementById` - [La doc de Bulma](https://bulma.io/documentation/components/modal/) nous dit que pour afficher une modale, il faut lui ajouter la classe `is-active`.
+  > > > > > > > 07236798d3a868b9ca78dabc42c354fe3d774de6
+  </details>
 
 ## Deuxième interaction : fermer la modale
 
@@ -49,7 +183,13 @@ Repère les 2 boutons ayant la classe "close" dans la modale. En cliquant sur un
 <details>
 <summary>De l'aide.</summary>
 
+<<<<<<< HEAD
 Inspire toi de ce qui a été fait à l'étape précédente :
+
+=======
+Inpire toi de ce qui a été fait à l'étape précédente :
+
+> > > > > > > 07236798d3a868b9ca78dabc42c354fe3d774de6
 
 - Dans la méthode `addListenerToActions`, récupère tous les boutons "close" (grace à `document.querySelectorAll`, par exemple), et ajoute leur un écouteur d'évenement qui déclenche `app.hideModals`.
 - Il te reste alors à coder `hideModals`, qui doit enlever la classe "is-active" à toutes les modales (oui, c'est un poil bourrin, mais ça évitera d'avoir à le refaire pour chacune des modales qu'on va rajouter).
@@ -58,7 +198,12 @@ Inspire toi de ce qui a été fait à l'étape précédente :
 
 ## Troisième interaction : valider le formulaire
 
+<<<<<<< HEAD
 Intercepte la soumission du formulaire "ajouter une liste". Empêche le fonctionnement par défaut de l'évènement, puis récupère les données du formulaire, et envoie les en paramètres à `app.makeListInDOM` (fonction codée à l'étape suivante).
+=======
+Intercepte la soumission du formulaire "ajouter une carte". Empêche le fonctionnement par défaut de l'évènement, puis récupère les données du formulaire, et envoie les en paramètres à `app.makeListInDOM` (fonction codée à l'étape suivante).
+
+> > > > > > > 07236798d3a868b9ca78dabc42c354fe3d774de6
 
 <details>
 <summary>De l'aide</summary>
@@ -66,7 +211,10 @@ Intercepte la soumission du formulaire "ajouter une liste". Empêche le fonction
 - Toujours dans `addListenerToActions`, récupère le bon formulaire grâce à `document.querySelector` et à un ciblage malin. Ajoute lui un écouteur, sur l'event "submit", qui déclenche `app.handleAddListForm`.
 - Code ensuite `app.handleAddListForm` : cette méthode doit attendre un paramètre `event`, pour y récupérer l'évenement déclencheur.
 - Pour empêcher la page de se recharger : `event.preventDefault()`
-- Pour récupérer les données du formulaire, regarde [la doc de FormData](https://developer.mozilla.org/fr/docs/Web/API/FormData).
+  <<<<<<< HEAD
+- # Pour récupérer les données du formulaire, regarde [la doc de FormData](https://developer.mozilla.org/fr/docs/Web/API/FormData).
+- Pour récupérer les données du formualaire, regarde [la doc de FormData](https://developer.mozilla.org/fr/docs/Web/API/FormData/Utilisation_objets_FormData).
+  > > > > > > > 07236798d3a868b9ca78dabc42c354fe3d774de6
 
 </details>
 
@@ -76,6 +224,7 @@ C'est le moment de coder la méthode `app.makeListInDOM`. Cette méthode doit cr
 
 On pourrait utiliser `document.createElement`, mais on va vite avoir un problème : on a un sacré paquet d'éléments à créer, ça va prendre un temps fou à écrire !
 
+<<<<<<< HEAD
 Heureusement, HTML nous propose un système pour palier à ce souci : les [template](https://developer.mozilla.org/fr/docs/Web/HTML/Element/template).
 
 Commence par créer un template dans le HTML, en copiant le contenu d'une des liste déjà présente, et donne lui un id explicite.
@@ -86,11 +235,27 @@ Dans la méthode `app.makeListInDOM`, il faut ensuite :
 - Grâce à `maListe.querySelector`, mettre à jour le nom de la liste.
 - Insérer la nouvelle liste dans le DOM au bon endroit ! (sers toi par exemple de [la méthode before](https://developer.mozilla.org/en-US/docs/Web/API/ChildNode/before) ).
 
-*Note* : rien ne t'empêche de rajouter des classes ou des identifiants dans le HTML pour te faciliter la vie...
+# _Note_ : rien ne t'empêche de rajouter des classes ou des identifiants dans le HTML pour te faciliter la vie...
 
-*Note 2* : à la fin de la méthode, on ferme toutes les modales !
+Heureusement, HTML nous propose un système pour pallier à ce souci : les [template](https://developer.mozilla.org/fr/docs/Web/HTML/Element/template).
+
+Commence par créer un template dans le HTML, en copiant le contenu d'une des liste déjà présente, et donne lui un id explicite.
+
+Dans la méthode `app.makeListInDOM`, il faut ensuite :
+
+- Récupérer le template, puis le cloner dans une variable (cf [cette doc](https://developer.mozilla.org/fr/docs/Web/HTML/Element/template) ).
+- Grâce à `maListe.querySelector`, mettre à jour le nom de la liste.
+- Insérer la nouvelle liste dans le DOM au bon endroit ! (sers toi par exemple de [la méthode before](https://developer.mozilla.org/en-US/docs/Web/API/ChildNode/before) ).
+
+_Note_ : rien ne t'empêche de rajouter des class ou des id dans le HTML pour te faciliter la vie...
+
+> > > > > > > 07236798d3a868b9ca78dabc42c354fe3d774de6
+
+_Note 2_ : à la fin de la méthode, on ferme toutes les modales !
 
 ## Fabriquer une nouvelle carte
+
+<<<<<<< HEAD
 
 ### préparer le terrain
 
@@ -100,15 +265,34 @@ Dans la méthode `app.makeListInDOM`, il faut ensuite :
 
 ### interactions
 
+=======
+
+#### préparer le terrain
+
+- Crée une modale "addCardModal", en t'inspirant très largement de la modale déjà existante.
+- Dans le formulaire contenu dans la modale, rajoute un input de type hidden, donc le nom est "list_id".
+- Crée un template pour les cartes à créer, sur le même principe que pour les listes.
+
+#### interactions
+
+> > > > > > > 07236798d3a868b9ca78dabc42c354fe3d774de6
+
 Cliquer sur un bouton "+" doit afficher la modale ET mettre à jour la valeur de l'input "list_id" dans le formulaire en fonction de la liste sur laquelle on a cliqué.
 
 <details>
 <summary>Help !</summary>
 
+<<<<<<< HEAD
+
 - Reprend le même principe que pour les interactions précédentes : cibler le bouton, lui ajouter un écouteur d'évèmenent, qui déclenche une méthode `app.showAddCardModal`.
 - `app.showAddCardModal` doit attendre un paramètre `event`. `event.target` contiendra l'objet qui a été cliqué.
 - Pour retrouver la liste, utilise `event.target.closest('.panel')`.
-- Pour retrouver l'id de la liste depuis son l'élément HTML correspondant, utilise `element.getAttribute('data-list-id')` ou `element.dataset.listId` ([à propos de dataset](https://developer.mozilla.org/fr/docs/Web/API/HTMLElement/dataset)).
+- # Pour retrouver l'id de la liste depuis son l'élément HTML correspondant, utilise `element.getAttribute('data-list-id')` ou `element.dataset.listId` ([à propos de dataset](https://developer.mozilla.org/fr/docs/Web/API/HTMLElement/dataset)).
+- Reprend le même principe que pour les interactions précédentes : cibler le bouton, lui ajouter un écouteru d'évèmenent, qui déclenche une méthode `app.showAddCardModal`.
+- `app.showAddCardModal` doit attendre un paramètre `event`. `event.target` contiendra l'objet qui a été cliqué.
+- Pour retrouver la liste, utilise `event.target.closest('.panel')`.
+- Pour retrouver l'id de la liste depuis son l'élément HTML correspondant, utilise `element.getAttribute('data-list-id')` ou `element.dataset.listId` ([doc de dataset](https://developer.mozilla.org/fr/docs/Web/API/HTMLElement/dataset)).
+  > > > > > > > 07236798d3a868b9ca78dabc42c354fe3d774de6
 
 </details>
 
@@ -126,10 +310,26 @@ Ensuite, valider le formulaire doit ajouter une nouvelle carte dans le DOM.
 
 </details>
 
+<<<<<<< HEAD
+
 ### petit souci de dynamisation
+
+=======
+
+#### petit souci de dynamisation
+
+> > > > > > > 07236798d3a868b9ca78dabc42c354fe3d774de6
 
 Tu as peut-être remarqué que si on crée une nouvelle liste, puis qu'on clique sur le "+", rien ne se passe : c'est normal, la liste a été créée _après_ que les écouteur aient été ajoutés.
 
 Il faut donc modifier `app.makeListInDOM`, pour ajouter l'écouteur sur le bouton "+" directement au moment de la création de la nouvelle liste !
 
+<<<<<<< HEAD
+
 ## Fin du jour 1 !
+
+=======
+
+## Fin du jour 2 !
+
+> > > > > > > 07236798d3a868b9ca78dabc42c354fe3d774de6

@@ -1,8 +1,11 @@
+html {
+	overflow-x: scroll;
+	background-color: #ccc;
+}
 body {
-  background-color: #ccc;
-  height: 100vh;
+	height: 100vh;
 }
 
 .card-lists {
-  overflow-x: auto;
+	overflow-x: auto;
 }
