@@ -36,6 +36,11 @@ var app = {
 		editCards.forEach((editCard) => {
 			editCard.addEventListener("dblclick", app.editCard);
 		});
+
+		const deleteCards = document.querySelectorAll(".icon.has-text-danger");
+		deleteCards.forEach((deleteCard) => {
+			deleteCard.addEventListener("dblclick", app.deleteCard);
+		});
 	},
 	showAddCardModal(e) {
 		let listId = e.target.closest(".panel");
@@ -280,6 +285,31 @@ var app = {
 			const findNewColorData = await findNewColorResponse.json();
 
 			thisCard.style.borderColor = findNewColorData.color;
+		} catch (error) {
+			console.error(error);
+		}
+	},
+	async deleteCard(e) {
+		try {
+			const confirmation = confirm(
+				"Voulez-vous vraiment supprimer cette carte ?"
+			);
+			if (!confirmation) return;
+
+			const thisCard = e.target.closest(".box");
+			cardId = thisCard.dataset.cardId;
+
+			const response = await fetch(`${app.base_url}/cards/${cardId}`, {
+				method: "DELETE",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error("Problème " + response.status);
+			}
+			return console.log(`Carte ${cardId} supprimée de la bdd`);
 		} catch (error) {
 			console.error(error);
 		}
