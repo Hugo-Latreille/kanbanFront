@@ -215,9 +215,32 @@ const tags = {
         </a>
         </span>`
 		);
+		thisCard
+			.querySelector(".addTag")
+			.addEventListener("dblclick", tags.showAddTagToCardModal);
+		thisCard
+			.querySelector(".delete.is-small")
+			.addEventListener("dblclick", tags.removeTagFromCard);
 
 		console.log(thisTag);
 		tags.hideAddTagToCardModals();
+	},
+	async removeTagFromCard(e) {
+		const confirmDelete = confirm("Voulez-vous vraiment enlever ce label ?");
+		if (!confirmDelete) return;
+		const thisCard = e.target.closest(".box");
+		const thisCardId = thisCard.dataset.cardId;
+		const thisTag = e.target.closest(".tag");
+		const thisTagId = thisTag.dataset.tagId;
+
+		const removeTagFromCard = await fetch(
+			`${index.base_url}/cards/${thisCardId}/tags/${thisTagId}`,
+			{
+				method: "DELETE",
+			}
+		);
+
+		thisCard.querySelector(`[data-tag-id="${thisTagId}"]`).remove();
 	},
 };
 

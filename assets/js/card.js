@@ -113,6 +113,10 @@ const card = {
 			tag.addEventListener("dblclick", tags.showAddTagToCardModal);
 		});
 
+		list.querySelectorAll(".delete.is-small").forEach((deleteBtn) => {
+			deleteBtn.addEventListener("dblclick", tags.removeTagFromCard);
+		});
+
 		// <span class="icon is-small has-text-primary">
 		// 						<i class="fas fa-pencil-alt"></i>
 		// 		</span>
