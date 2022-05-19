@@ -68,6 +68,15 @@ const index = {
 		closeUpdateTagModal.querySelectorAll(".close").forEach((modale) => {
 			modale.addEventListener("click", tags.hideUpdateTagModals);
 		});
+
+		document
+			.getElementById("deleteTagButton")
+			.addEventListener("click", tags.showDeleteTagModal);
+
+		const closeDeleteTagModal = document.getElementById("deleteTagModal");
+		closeDeleteTagModal.querySelectorAll(".close").forEach((modale) => {
+			modale.addEventListener("click", tags.hideDeleteTagModals);
+		});
 	},
 	async getListsFromAPI() {
 		try {

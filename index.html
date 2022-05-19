@@ -200,6 +200,35 @@
 				</form>
 			</div>
 		</div>
+		<!--? Modale delete tag -->
+		<div class="modal" id="deleteTagModal">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+				<form action="" method="POST">
+					<header class="modal-card-head">
+						<p class="modal-card-title">Supprimer un tag</p>
+						<button
+							class="delete close"
+							type="button"
+							aria-label="close"
+						></button>
+					</header>
+					<section class="modal-card-body">
+						<div class="field">
+							<label for="tag-select" class="label">Sélectionnez le tag à supprimer</label>
+							<select name="tagId" id="tag-select" class="selectTag">
+								<option value="">--Please choose an option--</option>
+							</select>
+							</div>
+						</div>
+					</section>
+					<footer class="modal-card-foot">
+						<button class="button is-success">Save changes</button>
+						<button class="button close" type="button">Cancel</button>
+					</footer>
+				</form>
+			</div>
+		</div>
 
 		<!--? TEMPLATE Liste -->
 		<template class="newList">
