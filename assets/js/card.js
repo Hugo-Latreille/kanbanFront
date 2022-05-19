@@ -91,8 +91,13 @@ const card = {
 				`<span class="tag has-text-white has-text-weight-bold" style="background-color: ${tag.color}" data-tag-id="${tag.id}">${tag.name}
                 <button class="delete is-small"></button>
                 <span class="icon is-small has-text-primary">
-								<i class="fas fa-pencil-alt"></i>
+								<i class="fas fa-pencil-alt">   </i>
 							</span>
+                            <a href="#" class="is-pulled-right">
+                            <span class="icon is-small has-text-white">   
+                                <i class="fas fa-plus"></i>
+                            </span>
+                        </a>
                 </span>`
 			);
 		});

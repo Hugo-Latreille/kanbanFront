@@ -1,5 +1,6 @@
 import list from "./list.js";
 import card from "./card.js";
+import tags from "./tags.js";
 
 const index = {
 	init: function () {
@@ -48,6 +49,15 @@ const index = {
 		const deleteLists = document.querySelectorAll(".icon_list.has-text-danger");
 		deleteLists.forEach((deleteList) => {
 			deleteList.addEventListener("dblclick", list.deleteList);
+		});
+
+		document
+			.getElementById("addTagButton")
+			.addEventListener("click", tags.showAddTagModal);
+
+		const closeTagModal = document.getElementById("addTagModal");
+		closeTagModal.querySelectorAll(".close").forEach((modale) => {
+			modale.addEventListener("click", tags.hideCardModals);
 		});
 	},
 	async getListsFromAPI() {

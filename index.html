@@ -29,6 +29,18 @@
 									</span>
 									&nbsp; Ajouter une liste
 								</button>
+								<button class="button is-info" id="addTagButton">
+									<span class="icon is-small">
+										<i class="fas fa-plus"></i>
+									</span>
+									&nbsp; Ajouter un label
+								</button>
+								<button class="button is-danger" id="deleteTagButton">
+									<span class="icon is-small">
+										<i class="fas fa-trash-alt"></i>
+									</span>
+									&nbsp; Supprimer un label
+								</button>
 							</div>
 						</div>
 					</div>
@@ -95,6 +107,42 @@
 									name="content"
 									value=""
 									placeholder="Nom de la carte"
+								/>
+								<input type="color" class="input" name="color" />
+							</div>
+						</div>
+					</section>
+					<footer class="modal-card-foot">
+						<button class="button is-success">Save changes</button>
+						<button class="button close" type="button">Cancel</button>
+					</footer>
+				</form>
+			</div>
+		</div>
+
+		<!--? Modale tag -->
+		<div class="modal" id="addTagModal">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+				<form action="" method="POST">
+					<header class="modal-card-head">
+						<p class="modal-card-title">Ajouter un tag</p>
+						<button
+							class="delete close"
+							type="button"
+							aria-label="close"
+						></button>
+					</header>
+					<section class="modal-card-body">
+						<div class="field">
+							<label class="label">Nom</label>
+							<div class="control">
+								<input
+									type="text"
+									class="input"
+									name="name"
+									value=""
+									placeholder="Nom de la liste"
 								/>
 								<input type="color" class="input" name="color" />
 							</div>
