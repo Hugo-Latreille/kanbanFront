@@ -1,4 +1,5 @@
 import index from "./index.js";
+import tags from "./tags.js";
 
 const card = {
 	showAddCardModal(e) {
@@ -68,7 +69,14 @@ const card = {
 			console.error(error);
 		}
 	},
-	makeCardInDOM(newName, listId, colorData, dataId, newCardPosition, tags) {
+	makeCardInDOM(
+		newName,
+		listId,
+		colorData,
+		dataId,
+		newCardPosition,
+		tagsFromCard
+	) {
 		const list = document.querySelector(`[data-list-id="${listId}"]`);
 		const firstList = list.querySelector(".panel-block");
 		const template = document.querySelector(".newCard");
@@ -85,16 +93,13 @@ const card = {
 		clone.querySelector(".box").style.borderColor = colorData;
 
 		const tagsDiv = clone.querySelector(".tags");
-		tags.forEach((tag) => {
+		tagsFromCard.forEach((tag) => {
 			tagsDiv.insertAdjacentHTML(
 				"afterbegin",
 				`<span class="tag has-text-white has-text-weight-bold" style="background-color: ${tag.color}" data-tag-id="${tag.id}">${tag.name}
-                <button class="delete is-small"></button>
-                <span class="icon is-small has-text-primary">
-								<i class="fas fa-pencil-alt"></i>
-				</span>
-                <a href="#" class="is-pulled-right">
-                    <span class="icon is-small has-text-white">   
+                <button class="delete is-small"></button>                
+                <a href="#" class="addLabel is-pulled-right">
+                    <span class=" addTag icon is-small has-text-white">   
                         <i class="fas fa-plus"></i>
                     </span>
                 </a>
@@ -104,6 +109,13 @@ const card = {
 
 		firstList.appendChild(clone);
 		index.addListenerToActions();
+		list.querySelectorAll(".addTag").forEach((tag) => {
+			tag.addEventListener("dblclick", tags.showAddTagToCardModal);
+		});
+
+		// <span class="icon is-small has-text-primary">
+		// 						<i class="fas fa-pencil-alt"></i>
+		// 		</span>
 	},
 	editCard(e) {
 		const thisCard = e.target.closest(".box");

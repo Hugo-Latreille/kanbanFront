@@ -22,9 +22,11 @@ const index = {
 		const listForm = document.querySelector("#addListModal form");
 		listForm.addEventListener("submit", list.handleAddListForm);
 
-		document.querySelectorAll(".is-small.has-text-white").forEach((icon) => {
-			icon.addEventListener("click", card.showAddCardModal);
-		});
+		document
+			.querySelectorAll(".addCard.is-small.has-text-white")
+			.forEach((icon) => {
+				icon.addEventListener("click", card.showAddCardModal);
+			});
 
 		const cardModale = document.getElementById("addCardModal");
 		cardModale.querySelectorAll(".close").forEach((modale) => {
@@ -76,6 +78,11 @@ const index = {
 		const closeDeleteTagModal = document.getElementById("deleteTagModal");
 		closeDeleteTagModal.querySelectorAll(".close").forEach((modale) => {
 			modale.addEventListener("click", tags.hideDeleteTagModals);
+		});
+
+		const closeAddTagToCardModal = document.getElementById("addTagToCardModal");
+		closeAddTagToCardModal.querySelectorAll(".close").forEach((modale) => {
+			modale.addEventListener("click", tags.hideAddTagToCardModals);
 		});
 	},
 	async getListsFromAPI() {
