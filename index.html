@@ -35,6 +35,12 @@
 									</span>
 									&nbsp; Ajouter un label
 								</button>
+								<button class="button is-warning" id="updateTagButton">
+									<span class="icon is-small">
+										<i class="fas fa-exclamation-triangle"></i>
+									</span>
+									&nbsp; Modifier un label
+								</button>
 								<button class="button is-danger" id="deleteTagButton">
 									<span class="icon is-small">
 										<i class="fas fa-trash-alt"></i>
@@ -143,6 +149,45 @@
 									name="name"
 									value=""
 									placeholder="Nom de la liste"
+								/>
+								<input type="color" class="input" name="color" />
+							</div>
+						</div>
+					</section>
+					<footer class="modal-card-foot">
+						<button class="button is-success">Save changes</button>
+						<button class="button close" type="button">Cancel</button>
+					</footer>
+				</form>
+			</div>
+		</div>
+
+		<!--? Modale update tag -->
+		<div class="modal" id="updateTagModal">
+			<div class="modal-background"></div>
+			<div class="modal-card">
+				<form action="" method="POST">
+					<header class="modal-card-head">
+						<p class="modal-card-title">Modifier un tag</p>
+						<button
+							class="delete close"
+							type="button"
+							aria-label="close"
+						></button>
+					</header>
+					<section class="modal-card-body">
+						<div class="field">
+							<label for="tag-select" class="label">Sélectionnez un tag</label>
+							<select name="tagId" id="tag-select" class="selectTag">
+								<option value="">--Please choose an option--</option>
+							</select>
+							<div class="control">
+								<input
+									type="text"
+									class="input"
+									name="name"
+									value=""
+									placeholder="Nouveau nom du label"
 								/>
 								<input type="color" class="input" name="color" />
 							</div>

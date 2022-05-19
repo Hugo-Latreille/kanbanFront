@@ -57,7 +57,16 @@ const index = {
 
 		const closeTagModal = document.getElementById("addTagModal");
 		closeTagModal.querySelectorAll(".close").forEach((modale) => {
-			modale.addEventListener("click", tags.hideCardModals);
+			modale.addEventListener("click", tags.hideTagModals);
+		});
+
+		document
+			.getElementById("updateTagButton")
+			.addEventListener("click", tags.showUpdateTagModal);
+
+		const closeUpdateTagModal = document.getElementById("updateTagModal");
+		closeUpdateTagModal.querySelectorAll(".close").forEach((modale) => {
+			modale.addEventListener("click", tags.hideUpdateTagModals);
 		});
 	},
 	async getListsFromAPI() {
