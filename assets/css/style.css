@@ -14,3 +14,9 @@ body {
 	border-left: 0.8rem solid;
 	border-color: rgb(174, 225, 255);
 }
+
+.tag {
+	border: 2px solid red;
+	color: white;
+	font-size: 2rem;
+}

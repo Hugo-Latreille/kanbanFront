@@ -1,4 +1,4 @@
-var app = {
+const app = {
 	init: function () {
 		console.log("app.init !");
 		app.addListenerToActions();
@@ -93,13 +93,13 @@ var app = {
 			const data = await response.json();
 			console.log(newName);
 
-			app.makeCardInDOM(newName, listId, colorData, data.id);
+			app.makeCardInDOM(newName, listId, colorData, data.id, newCardPosition);
 			app.hideCardModals();
 		} catch (error) {
 			console.error(error);
 		}
 	},
-	makeCardInDOM(newName, listId, colorData, dataId) {
+	makeCardInDOM(newName, listId, colorData, dataId, newCardPosition) {
 		const list = document.querySelector(`[data-list-id="${listId}"]`);
 		const firstList = list.querySelector(".panel-block");
 		const template = document.querySelector(".newCard");
@@ -107,6 +107,9 @@ var app = {
 		const clone = document.importNode(templateContent, true);
 		const title = clone.querySelector(".column");
 		title.textContent = newName;
+		const position = clone.querySelector("input[name='position']");
+		position.setAttribute("value", newCardPosition);
+
 		const setListIdInCard = clone.querySelector("input[name='list-id']");
 		setListIdInCard.setAttribute("value", listId);
 		clone.querySelector(".box").dataset.cardId = dataId;
@@ -137,6 +140,7 @@ var app = {
 			}
 
 			const data = await response.json();
+			// console.log(data);
 			app.makeListInDOM(inputData, data.id);
 			app.hideModals();
 		} catch (error) {
@@ -198,6 +202,14 @@ var app = {
 				const firstList = list.querySelector(".panel-block");
 				const template = document.querySelector(".newCard");
 				const clone = document.importNode(template.content, true);
+				const position = clone.querySelector("input[name='position']");
+				position.setAttribute("value", card.position);
+				//! test position
+				// const test = position.value;
+				// // console.log(test);
+				// const newCardPosition = clone.querySelectorAll(".box").length + 1;
+				// console.log(newCardPosition);
+				//!
 				const title = clone.querySelector(".column");
 				title.textContent = card.content;
 				const setListIdInCard = clone.querySelector("input[name='list-id']");
@@ -218,6 +230,8 @@ var app = {
 		title.classList.add("is-hidden");
 		const form = thisList.querySelector("form");
 		form.classList.remove("is-hidden");
+		const setTextToUpdate = thisList.querySelector("input[name='name']");
+		setTextToUpdate.setAttribute("value", title.textContent);
 		form.addEventListener("submit", app.updateListForm);
 	},
 	async updateListForm(e) {
@@ -261,7 +275,22 @@ var app = {
 		form.classList.remove("is-hidden");
 		thisCard
 			.querySelector(".input.is-small")
-			.setAttribute("placeholder", title.textContent);
+			.setAttribute("value", title.textContent);
+
+		//*update position
+		const thisCardPosition = thisCard.querySelector(
+			"input[name='position']"
+		).value;
+		const maxPosition = thisCard
+			.closest(".panel")
+			.querySelectorAll(".box").length;
+		const selectPosition = thisCard.querySelector(".selectPosition");
+		for (let option = 0; option < maxPosition; option++) {
+			selectPosition.innerHTML += `<option value="${option + 1}">${
+				option + 1
+			}</option>`;
+		}
+
 		form.addEventListener("submit", app.updateCardForm);
 	},
 	async updateCardForm(e) {
@@ -272,6 +301,27 @@ var app = {
 			const title = thisCard.querySelector(".column");
 			const form = thisCard.querySelector("form");
 			const cardId = thisCard.dataset.cardId;
+			const thisCardPosition = thisCard.querySelector(
+				"input[name='position']"
+			).value;
+			const newPosition = formData.get("newPosition");
+			const listId = thisCard.querySelector("input[name='list-id']").value;
+			console.log(listId);
+			formData.set("list_id", listId);
+
+			//*Update Position only
+			const updatePosition = await fetch(
+				`${app.base_url}/cards/${cardId}/position/${newPosition}`,
+				{
+					method: "PATCH",
+					// body: formData,
+				}
+			);
+			const updatePositionData = await updatePosition.json();
+			console.log(updatePositionData);
+
+			formData.delete("newPosition");
+			formData.delete("position");
 
 			const response = await fetch(`${app.base_url}/cards/${cardId}`, {
 				method: "PATCH",
@@ -294,6 +344,7 @@ var app = {
 			const findNewColorData = await findNewColorResponse.json();
 
 			thisCard.style.borderColor = findNewColorData.color;
+			document.location.reload();
 		} catch (error) {
 			console.error(error);
 		}
