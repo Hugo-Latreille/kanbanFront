@@ -247,7 +247,7 @@
 							<input type="hidden" name="cardId" value="">
 							<label for="tag-select" class="label">Sélectionnez un tag à ajouter</label>
 							<select name="tagId" id="tag-select" class="selectTag">
-								<option value="">--Please choose an option--</option>
+								<option value="">--Veillez sélectionner un label dans cette liste--</option>
 							</select>
 								
 							</div>
@@ -355,6 +355,18 @@
 					</div>
 				</div>
 			</div>
+		</template>
+
+		<!--? TEMPLATE tag -->
+		<template class="newTag"> 
+			<span class="tag has-text-white has-text-weight-bold" data-tag-id="">
+				<button class="delete is-small"></button>
+				<a href="#" class="addLabel is-pulled-right">
+					<span class=" addTag icon is-small has-text-white">
+						<i class="fas fa-plus"></i>
+					</span>
+				</a>
+				</span>
 		</template>
 
 		<!-- Chargement de mon fichier JS -->

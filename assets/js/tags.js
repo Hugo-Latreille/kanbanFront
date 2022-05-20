@@ -159,6 +159,7 @@ const tags = {
 			const options = label.querySelectorAll("option").length;
 
 			if (options === 1) {
+				//option par default: "sélectionnez un label dans cette liste: "
 				allTagsData.forEach((tag) => {
 					label.insertAdjacentHTML(
 						"beforeend",
@@ -204,17 +205,15 @@ const tags = {
 		const thisCard = document
 			.querySelector(`[data-card-id="${formData.get("cardId")}"]`)
 			.querySelector(".tags");
-		thisCard.insertAdjacentHTML(
-			"afterbegin",
-			`<span class="tag has-text-white has-text-weight-bold" style="background-color: ${thisTagData.color}" data-tag-id="${thisTagData.id}">${thisTagData.name}
-        <button class="delete is-small"></button>                
-        <a href="#" class="addLabel is-pulled-right">
-            <span class=" addTag icon is-small has-text-white">   
-                <i class="fas fa-plus"></i>
-            </span>
-        </a>
-        </span>`
-		);
+
+		const tagTemplate = document.querySelector(".newTag");
+		const tagClone = document.importNode(tagTemplate.content, true);
+		const thisTagClone = tagClone.querySelector(".tag");
+		thisTagClone.style.backgroundColor = thisTagData.color;
+		thisTagClone.dataset.tagId = thisTagData.id;
+		thisTagClone.innerText = thisTagData.name;
+		thisCard.appendChild(thisTagClone);
+
 		thisCard
 			.querySelector(".addTag")
 			.addEventListener("dblclick", tags.showAddTagToCardModal);

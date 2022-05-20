@@ -83,10 +83,6 @@ const list = {
 
 			const response = await fetch(`${index.base_url}/lists/${listId}`, {
 				method: "PATCH",
-				// headers: {
-				// 	Accept: "application/json",
-				// 	"Content-Type": "application/json",
-				// },
 				body: formData,
 			});
 

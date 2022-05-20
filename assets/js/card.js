@@ -96,17 +96,13 @@ const card = {
 		const tagsDiv = clone.querySelector(".tags");
 		if (tagsFromCard) {
 			tagsFromCard.forEach((tag) => {
-				tagsDiv.insertAdjacentHTML(
-					"afterbegin",
-					`<span class="tag has-text-white has-text-weight-bold" style="background-color: ${tag.color}" data-tag-id="${tag.id}">${tag.name}
-                    <button class="delete is-small"></button>
-                    <a href="#" class="addLabel is-pulled-right">
-                        <span class=" addTag icon is-small has-text-white">
-                            <i class="fas fa-plus"></i>
-                        </span>
-                    </a>
-                    </span>`
-				);
+				const tagTemplate = document.querySelector(".newTag");
+				const tagClone = document.importNode(tagTemplate.content, true);
+				const thisTag = tagClone.querySelector(".tag");
+				thisTag.style.backgroundColor = tag.color;
+				thisTag.dataset.tagId = tag.id;
+				thisTag.innerText = tag.name;
+				tagsDiv.appendChild(tagClone);
 			});
 		}
 
@@ -150,9 +146,7 @@ const card = {
 			selectPosition.innerHTML += `<option value="${option + 1}" ${setSelected(
 				option
 			)}>${option + 1}</option>`;
-			console.log(typeof option + 1);
 		}
-		console.log(typeof thisCardPosition);
 
 		form.addEventListener("submit", card.updateCardForm);
 	},
@@ -172,17 +166,16 @@ const card = {
 			console.log(listId);
 			formData.set("list_id", listId);
 
-			if (!thisCardPosition === newPosition) {
-				//*Update Position only
-				const updatePosition = await fetch(
-					`${index.base_url}/cards/${cardId}/position/${newPosition}`,
-					{
-						method: "PATCH",
-					}
-				);
-				const updatePositionData = await updatePosition.json();
-				console.log(updatePositionData);
-			}
+			// if (!thisCardPosition === newPosition)
+			//*Update Position only
+			const updatePosition = await fetch(
+				`${index.base_url}/cards/${cardId}/position/${newPosition}`,
+				{
+					method: "PATCH",
+				}
+			);
+			const updatePositionData = await updatePosition.json();
+			console.log(updatePositionData);
 
 			formData.delete("newPosition");
 			formData.delete("position");
@@ -246,3 +239,12 @@ const card = {
 };
 
 export default card;
+
+//* update de toutes les positions : back ok
+//* SINON
+//* nouvelle < ancienne : on incrémente de 1 la position de toutes les autres cartes de la même liste dont la position est >= nouvelle ET < à l'ancienne
+//* nouvelle > ancienne : on décrémente de 1 la position de toutes les autres cartes de la même liste dont la position est > ancienne et <= nouvelle
+//* On update la position de cette carte
+
+//? nouvelle < ancienne -> position >= nouvelle && < ancienne -> position +1 -> update ces cartes puis la carte
+//? nouvelle > ancienne -> position > ancienne && <= nouvelle -> position -1 -> update ces cartes puis la carte
