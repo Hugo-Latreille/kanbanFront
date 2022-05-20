@@ -101,7 +101,7 @@ const card = {
 				const thisTag = tagClone.querySelector(".tag");
 				thisTag.style.backgroundColor = tag.color;
 				thisTag.dataset.tagId = tag.id;
-				thisTag.innerText = tag.name;
+				thisTag.querySelector(".tagTitle").innerText = tag.name;
 				tagsDiv.appendChild(tagClone);
 			});
 		}

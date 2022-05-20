@@ -185,7 +185,6 @@ const tags = {
 	async handleAddTagToCardForm(e) {
 		e.preventDefault();
 		const formData = new FormData(e.target);
-		console.log(formData.get("cardId"), formData.get("tagId"));
 
 		const addTagToCard = await fetch(
 			`${index.base_url}/cards/${formData.get("cardId")}/tags/${formData.get(
@@ -211,8 +210,11 @@ const tags = {
 		const thisTagClone = tagClone.querySelector(".tag");
 		thisTagClone.style.backgroundColor = thisTagData.color;
 		thisTagClone.dataset.tagId = thisTagData.id;
-		thisTagClone.innerText = thisTagData.name;
+		thisTagClone.querySelector(".tagTitle").innerText = thisTagData.name;
 		thisCard.appendChild(thisTagClone);
+
+		tags.hideAddTagToCardModals();
+		console.log(thisCard.querySelector(".addTag"));
 
 		thisCard
 			.querySelector(".addTag")
@@ -220,9 +222,6 @@ const tags = {
 		thisCard
 			.querySelector(".delete.is-small")
 			.addEventListener("dblclick", tags.removeTagFromCard);
-
-		console.log(thisTag);
-		tags.hideAddTagToCardModals();
 	},
 	async removeTagFromCard(e) {
 		const confirmDelete = confirm("Voulez-vous vraiment enlever ce label ?");
