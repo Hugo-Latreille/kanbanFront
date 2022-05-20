@@ -142,11 +142,17 @@ const card = {
 			.closest(".panel")
 			.querySelectorAll(".box").length;
 		const selectPosition = thisCard.querySelector(".selectPosition");
+
+		const setSelected = (option) => {
+			return option + 1 === Number(thisCardPosition) ? "selected" : "";
+		};
 		for (let option = 0; option < maxPosition; option++) {
-			selectPosition.innerHTML += `<option value="${option + 1}">${
-				option + 1
-			}</option>`;
+			selectPosition.innerHTML += `<option value="${option + 1}" ${setSelected(
+				option
+			)}>${option + 1}</option>`;
+			console.log(typeof option + 1);
 		}
+		console.log(typeof thisCardPosition);
 
 		form.addEventListener("submit", card.updateCardForm);
 	},
@@ -166,16 +172,17 @@ const card = {
 			console.log(listId);
 			formData.set("list_id", listId);
 
-			//*Update Position only
-			const updatePosition = await fetch(
-				`${index.base_url}/cards/${cardId}/position/${newPosition}`,
-				{
-					method: "PATCH",
-					// body: formData,
-				}
-			);
-			const updatePositionData = await updatePosition.json();
-			console.log(updatePositionData);
+			if (!thisCardPosition === newPosition) {
+				//*Update Position only
+				const updatePosition = await fetch(
+					`${index.base_url}/cards/${cardId}/position/${newPosition}`,
+					{
+						method: "PATCH",
+					}
+				);
+				const updatePositionData = await updatePosition.json();
+				console.log(updatePositionData);
+			}
 
 			formData.delete("newPosition");
 			formData.delete("position");
