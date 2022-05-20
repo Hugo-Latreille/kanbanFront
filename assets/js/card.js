@@ -9,6 +9,7 @@ const card = {
 		const inputListId = modale.querySelector('[name="list-id"]');
 		inputListId.setAttribute("value", `${listId}`);
 		modale.classList.add("is-active");
+		modale.querySelector("input[name='content']").value = "";
 		const cardForm = document.querySelector("#addCardModal form");
 		cardForm.addEventListener("submit", card.handleAddCardForm);
 	},
@@ -93,22 +94,22 @@ const card = {
 		clone.querySelector(".box").style.borderColor = colorData;
 
 		const tagsDiv = clone.querySelector(".tags");
-		tagsFromCard.forEach((tag) => {
-			tagsDiv.insertAdjacentHTML(
-				"afterbegin",
-				`<span class="tag has-text-white has-text-weight-bold" style="background-color: ${tag.color}" data-tag-id="${tag.id}">${tag.name}
-                <button class="delete is-small"></button>                
-                <a href="#" class="addLabel is-pulled-right">
-                    <span class=" addTag icon is-small has-text-white">   
-                        <i class="fas fa-plus"></i>
-                    </span>
-                </a>
-                </span>`
-			);
-		});
+		if (tagsFromCard) {
+			tagsFromCard.forEach((tag) => {
+				tagsDiv.insertAdjacentHTML(
+					"afterbegin",
+					`<span class="tag has-text-white has-text-weight-bold" style="background-color: ${tag.color}" data-tag-id="${tag.id}">${tag.name}
+                    <button class="delete is-small"></button>
+                    <a href="#" class="addLabel is-pulled-right">
+                        <span class=" addTag icon is-small has-text-white">
+                            <i class="fas fa-plus"></i>
+                        </span>
+                    </a>
+                    </span>`
+				);
+			});
+		}
 
-		firstList.appendChild(clone);
-		index.addListenerToActions();
 		list.querySelectorAll(".addTag").forEach((tag) => {
 			tag.addEventListener("dblclick", tags.showAddTagToCardModal);
 		});
@@ -116,6 +117,8 @@ const card = {
 		list.querySelectorAll(".delete.is-small").forEach((deleteBtn) => {
 			deleteBtn.addEventListener("dblclick", tags.removeTagFromCard);
 		});
+		firstList.appendChild(clone);
+		index.addListenerToActions();
 
 		// <span class="icon is-small has-text-primary">
 		// 						<i class="fas fa-pencil-alt"></i>

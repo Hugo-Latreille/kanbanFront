@@ -5,6 +5,7 @@ const list = {
 	showAddListModal() {
 		const modale = document.getElementById("addListModal");
 		modale.classList.add("is-active");
+		modale.querySelector("input[name='name']").value = "";
 	},
 	hideModals() {
 		const closeModale = document.getElementById("addListModal");
@@ -50,6 +51,12 @@ const list = {
 			const data = await response.json();
 			// console.log(data);
 			list.makeListInDOM(inputData, data.id);
+			const deleteLists = document.querySelectorAll(
+				".icon_list.has-text-danger"
+			);
+			deleteLists.forEach((deleteList) => {
+				deleteList.addEventListener("dblclick", list.deleteList);
+			});
 			list.hideModals();
 		} catch (error) {
 			console.error(error);
