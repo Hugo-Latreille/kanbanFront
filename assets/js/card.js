@@ -1,3 +1,4 @@
+import initDrag from "./dragdrop.js";
 import index from "./index.js";
 import tags from "./tags.js";
 
@@ -116,9 +117,7 @@ const card = {
 		firstList.appendChild(clone);
 		index.addListenerToActions();
 
-		// <span class="icon is-small has-text-primary">
-		// 						<i class="fas fa-pencil-alt"></i>
-		// 		</span>
+		initDrag();
 	},
 	editCard(e) {
 		const thisCard = e.target.closest(".box");
@@ -246,5 +245,5 @@ export default card;
 //* nouvelle > ancienne : on décrémente de 1 la position de toutes les autres cartes de la même liste dont la position est > ancienne et <= nouvelle
 //* On update la position de cette carte
 
-//? nouvelle < ancienne -> position >= nouvelle && < ancienne -> position +1 -> update ces cartes puis la carte
+//? nouvelle < ancienne -> position >= nouvelle && < ancienne -> position +1 -> update position chacune de ces cartes puis la carte
 //? nouvelle > ancienne -> position > ancienne && <= nouvelle -> position -1 -> update ces cartes puis la carte

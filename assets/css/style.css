@@ -13,8 +13,17 @@ body {
 .box {
 	border-left: 0.8rem solid;
 	border-color: rgb(174, 225, 255);
+	cursor: move;
+}
+
+.box.dragging {
+	opacity: 0.5;
 }
 
 .addLabel {
 	margin-left: 15px;
+}
+
+.dropZone {
+	margin: 0.5rem 0;
 }

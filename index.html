@@ -307,51 +307,52 @@
 		</template>
 		<!--? TEMPLATE carte -->
 		<template class="newCard">
-			<div class="box" data-card-id="L">
-				<div class="tags are-small"></div>
-				<div class="columns">
-					<div class="column"></div>
-					<form action="" method="POST" class="is-hidden">
-						<input type="hidden" name="list-id" value="2" />
-						<div class="field has-addons">
-							<div class="control">
-								<input
-									type="text"
-									class="input is-small"
-									name="content"
-									value=""
-									placeholder="Nom de la liste"
-								/>
-								<input type="color" class="input" name="color" />
-								<input type="hidden" name="position" value="1" />
-								<select class="selectPosition" name="newPosition">
-									<!-- <option value="1" selected>1</option>
-									<option value="2">2</option>
-									<option value="3">3</option> -->
-								</select>
+			<div class="dropZone">
+				<div class="box" data-card-id="L" draggable="true">
+					<div class="tags are-small"></div>
+					<div class="columns">
+						<div class="column"></div>
+						<form action="" method="POST" class="is-hidden">
+							<input type="hidden" name="list-id" value="2" />
+							<div class="field has-addons">
+								<div class="control">
+									<input
+										type="text"
+										class="input is-small"
+										name="content"
+										value=""
+										placeholder="Nom de la liste"
+									/>
+									<input type="color" class="input" name="color" />
+									<input type="hidden" name="position" value="1" />
+									<select class="selectPosition" name="newPosition">
+										<!-- <option value="1" selected>1</option>
+										<option value="2">2</option>
+										<option value="3">3</option> -->
+									</select>
+								</div>
+								<div class="control">
+									<button class="button is-small is-success">Valider</button>
+								</div>
 							</div>
-							<div class="control">
-								<button class="button is-small is-success">Valider</button>
-							</div>
+						</form>
+						<div class="column is-narrow">
+							<a href="#">
+								<span class="icon is-small has-text-primary">
+									<i class="fas fa-pencil-alt"></i>
+								</span>
+							</a>
+							<a href="#">
+								<span class="icon is-small has-text-danger">
+									<i class="fas fa-trash-alt"></i>
+								</span>
+							</a>
+							<a href="#" class="addLabel is-pulled-right">
+								<span class=" addTag icon is-small">
+									<i class="fas fa-plus"></i>
+								</span>
+							</a>
 						</div>
-					</form>
-
-					<div class="column is-narrow">
-						<a href="#">
-							<span class="icon is-small has-text-primary">
-								<i class="fas fa-pencil-alt"></i>
-							</span>
-						</a>
-						<a href="#">
-							<span class="icon is-small has-text-danger">
-								<i class="fas fa-trash-alt"></i>
-							</span>
-						</a>
-						<a href="#" class="addLabel is-pulled-right">
-							<span class=" addTag icon is-small">   
-								<i class="fas fa-plus"></i>
-							</span>
-						</a>
 					</div>
 				</div>
 			</div>
@@ -373,5 +374,6 @@
 		<!-- Chargement de mon fichier JS -->
 		<!-- <script src="./assets/js/app.js"></script> -->
 		<script src="./assets/js/index.js" type="module"></script>
+		
 	</body>
 </html>
