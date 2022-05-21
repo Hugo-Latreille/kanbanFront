@@ -1,4 +1,5 @@
 import card from "./card.js";
+import createDropZone from "./dragOther.js";
 import index from "./index.js";
 
 const list = {
@@ -26,6 +27,12 @@ const list = {
 
 		clone.querySelector(".column").dataset.listId = listId;
 		lastColumn.before(clone);
+
+		//? Create TopDropZone
+		const thisList = document.querySelector(`[data-list-id="${listId}"]`);
+		const cardsContainer = thisList.querySelector(".panel-block");
+		const topDropZone = createDropZone();
+		cardsContainer.appendChild(topDropZone);
 	},
 	async handleAddListForm(e) {
 		try {

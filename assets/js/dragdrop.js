@@ -7,7 +7,6 @@ const handleDrag = (e) => {
 
 	const cards = thisList.querySelectorAll(".box");
 	const dropZones = thisList.querySelectorAll(".dropZone");
-	console.log(dropZones);
 	cards.forEach((card) => {
 		card.addEventListener("dragstart", () => {
 			card.classList.add("dragging");
@@ -24,6 +23,8 @@ const handleDrag = (e) => {
 	dropZones.forEach((dropZone) => {
 		dropZone.addEventListener("dragover", (e) => {
 			e.preventDefault();
+			// dropZone.classList.add("is-active");
+
 			const afterElement = getDragAfterElement(dropZone, e.clientY);
 			console.log(afterElement);
 			const card = document.querySelector(".dragging");
@@ -33,6 +34,9 @@ const handleDrag = (e) => {
 				dropZone.insertBefore(card, afterElement);
 			}
 		});
+		// dropZone.addEventListener("dragleave", (e) => {
+		// 	dropZone.classList.remove("is-active");
+		// });
 	});
 
 	const getDragAfterElement = (dropZone, y) => {

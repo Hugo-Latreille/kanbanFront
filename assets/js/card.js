@@ -1,4 +1,6 @@
-import initDrag from "./dragdrop.js";
+// import initDrag from "./dragdrop.js";
+// import initOtherDrag from "./dragOther.js";
+import createDropZone from "./dragOther.js";
 import index from "./index.js";
 import tags from "./tags.js";
 
@@ -117,7 +119,17 @@ const card = {
 		firstList.appendChild(clone);
 		index.addListenerToActions();
 
-		initDrag();
+		//?Init drag&drop pour chaque carte et transmission d'info
+		const thisCard = document.querySelector(`[data-card-id="${dataId}"]`);
+		// .querySelector(".columns");
+		const thisCardId = thisCard.dataset.cardId;
+		thisCard.addEventListener("dragstart", (e) => {
+			e.dataTransfer.setData("text/plain", thisCardId);
+		});
+
+		//? Create TopDropZone
+		const topDropZone = createDropZone();
+		thisCard.after(topDropZone);
 	},
 	editCard(e) {
 		const thisCard = e.target.closest(".box");

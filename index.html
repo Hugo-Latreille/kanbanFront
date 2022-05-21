@@ -22,7 +22,7 @@
 				<div class="columns">
 					<div class="column is-full">
 						<div class="card-lists columns">
-							<div class="column">
+							<div class="column ">
 								<button class="button is-success" id="addListButton">
 									<span class="icon is-small">
 										<i class="fas fa-plus"></i>
@@ -301,14 +301,13 @@
 							</a>
 						</div>
 					</div>
-				</div>
-				<div class="panel-block is-block has-background-light"></div>
+				</div>				
+					<div class="panel-block is-block has-background-light"></div>				
 			</div>
 		</template>
 		<!--? TEMPLATE carte -->
-		<template class="newCard">
-			<div class="dropZone">
-				<div class="box" data-card-id="L" draggable="true">
+		<template class="newCard">			
+				<div class="box is-marginless" data-card-id="L" draggable="true">
 					<div class="tags are-small"></div>
 					<div class="columns">
 						<div class="column"></div>
@@ -326,9 +325,7 @@
 									<input type="color" class="input" name="color" />
 									<input type="hidden" name="position" value="1" />
 									<select class="selectPosition" name="newPosition">
-										<!-- <option value="1" selected>1</option>
-										<option value="2">2</option>
-										<option value="3">3</option> -->
+										
 									</select>
 								</div>
 								<div class="control">
@@ -355,7 +352,8 @@
 						</div>
 					</div>
 				</div>
-			</div>
+				
+			
 		</template>
 
 		<!--? TEMPLATE tag -->

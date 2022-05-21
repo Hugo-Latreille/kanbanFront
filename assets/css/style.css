@@ -12,6 +12,7 @@ body {
 
 .box {
 	border-left: 0.8rem solid;
+	margin-bottom: 0;
 	border-color: rgb(174, 225, 255);
 	cursor: move;
 }
@@ -25,5 +26,11 @@ body {
 }
 
 .dropZone {
-	margin: 2rem 0;
+	height: 1rem;
+	transition: background 0.15s, height 0.15s;
+}
+
+.dropZone.is-active {
+	height: 2.5rem;
+	background-color: rgba(0, 0, 0, 0.25);
 }
