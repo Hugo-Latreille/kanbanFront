@@ -24,10 +24,12 @@ const createDropZone = () => {
 		const cardId = e.dataTransfer.getData("text/plain");
 		const droppedCardElement = document.querySelector(
 			`[data-card-id="${cardId}"]`
-		);
+		).parentElement;
 
-		const insertAfter = dropZone.previousElementSibling
-			? dropZone.previousElementSibling
+		const insertAfter = dropZone.parentElement.classList.contains(
+			"cardWithDropZone"
+		)
+			? dropZone.parentElement
 			: dropZone;
 
 		if (droppedIndex === 0) {
