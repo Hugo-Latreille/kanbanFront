@@ -241,7 +241,7 @@ const card = {
 			if (!response.ok) {
 				throw new Error("Problème " + response.status);
 			}
-			parent.removeChild(thisCard);
+			thisCard.remove();
 			return console.log(`Carte ${cardId} supprimée de la bdd`);
 		} catch (error) {
 			console.error(error);
@@ -259,3 +259,5 @@ export default card;
 
 //? nouvelle < ancienne -> position >= nouvelle && < ancienne -> position +1 -> update position chacune de ces cartes puis la carte
 //? nouvelle > ancienne -> position > ancienne && <= nouvelle -> position -1 -> update ces cartes puis la carte
+
+//?
