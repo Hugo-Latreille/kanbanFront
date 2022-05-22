@@ -109,13 +109,6 @@ const card = {
 			});
 		}
 
-		list.querySelectorAll(".addTag").forEach((tag) => {
-			tag.addEventListener("dblclick", tags.showAddTagToCardModal);
-		});
-
-		list.querySelectorAll(".delete.is-small").forEach((deleteBtn) => {
-			deleteBtn.addEventListener("dblclick", tags.removeTagFromCard);
-		});
 		firstList.appendChild(clone);
 		index.addListenerToActions();
 
@@ -130,6 +123,14 @@ const card = {
 		//? Create TopDropZone
 		const topDropZone = createDropZone();
 		thisCard.after(topDropZone);
+
+		list.querySelectorAll(".delete.is-small").forEach((deleteBtn) => {
+			deleteBtn.addEventListener("dblclick", tags.removeTagFromCard);
+		});
+
+		list.querySelectorAll(".addTag").forEach((tag) => {
+			tag.addEventListener("dblclick", tags.showAddTagToCardModal);
+		});
 	},
 	editCard(e) {
 		const thisCard = e.target.closest(".box");

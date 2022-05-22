@@ -22,7 +22,7 @@ const createDropZone = () => {
 		const thisList = dropZone.closest("[data-list-id]");
 		const newListId = Number(thisList.dataset.listId);
 		const dropZonesInList = [...thisList.querySelectorAll(".dropZone")];
-		let newCardPosition = dropZonesInList.indexOf(dropZone);
+		const dropZoneIndex = dropZonesInList.indexOf(dropZone) + 1;
 		const cardId = Number(e.dataTransfer.getData("text/plain"));
 
 		const droppedCardElement = document.querySelector(
@@ -34,10 +34,6 @@ const createDropZone = () => {
 				.querySelector("input[name='position']").value
 		);
 
-		if (newCardPosition === 0) {
-			return (newCardPosition = 1);
-		}
-
 		const insertAfter = dropZone.parentElement.classList.contains(
 			"cardWithDropZone"
 		)
@@ -47,9 +43,10 @@ const createDropZone = () => {
 		updateListAndCardsPosition(
 			newListId,
 			cardId,
-			newCardPosition,
+			dropZoneIndex,
 			thisCardPosition
 		);
+		// updateCardsPositionAPI(cardId, dropZoneIndex, newListId, thisCardPosition);
 		insertAfter.after(droppedCardElement);
 	});
 
@@ -65,19 +62,38 @@ const updateListAndCardsPosition = async (
 	try {
 		//!on update toutes les positions de cette liste
 		const newList = document.querySelector(`[data-list-id="${newListId}"]`);
-		const allCardsInList = newList.querySelectorAll("[data-card-id");
-		console.log(newPosition, oldPosition);
+		const allCardsInList = newList.querySelectorAll("[data-card-id]");
+
+		let goodNewPosition = newPosition - 1;
+
+		if (goodNewPosition === 0) {
+			goodNewPosition = 1;
+		}
 
 		allCardsInList.forEach(async (card) => {
 			const thisCardIds = Number(card.dataset.cardId);
 			const oldCardPositions = Number(
 				card.querySelector("input[name='position']").value
 			);
-			console.log([thisCardIds, oldCardPositions]);
+
+			// if (goodNewPosition < oldPosition) {
+			// 	if (
+			// 		oldCardPositions >= goodNewPosition &&
+			// 		oldCardPositions < oldPosition
+			// 	) {
+			// 		console.log(
+			// 			cardId,
+			// 			oldCardPositions,
+			// 			oldPosition,
+			// 			goodNewPosition,
+			// 			newPosition
+			// 		);
+			// 	}
+			// }
 
 			if (newPosition < oldPosition) {
 				if (oldCardPositions >= newPosition && oldCardPositions < oldPosition) {
-					const updateThisCard = await fetch(
+					const updateCards = await fetch(
 						`${index.base_url}/cards/${thisCardIds}`,
 						{
 							method: "PATCH",
@@ -89,15 +105,45 @@ const updateListAndCardsPosition = async (
 							}),
 						}
 					);
-					console.log(updateThisCard);
-					if (!updateThisCard.ok) {
+					console.log(updateCards);
+					if (!updateCards.ok) {
 						throw new Error("Problème avec le PATCH " + response.status);
 					}
+					const updateThisCard = await fetch(
+						`${index.base_url}/cards/${cardId}`,
+						{
+							method: "PATCH",
+							body: JSON.stringify({
+								position: newPosition,
+								list_id: newListId,
+							}),
+							headers: {
+								"Content-type": "application/json",
+							},
+						}
+					);
+					console.log(updateThisCard);
+					if (!updateThisCard.ok) {
+						throw new Error("Problème avec le PATCH " + updateThisCard.status);
+					}
+					//! on met à jour la position de la carte sans refresh
+					card
+						.querySelector("input[name='position']")
+						.setAttribute("value", `${oldCardPositions + 1}`);
+					document
+						.querySelector(`[data-card-id="${cardId}"]`)
+						.querySelector("input[name='position']")
+						.setAttribute("value", `${newPosition}`);
 					return;
 				}
-			} else {
-				if (oldCardPositions <= newPosition && oldCardPositions > oldPosition) {
-					const updateThisCard = await fetch(
+			}
+
+			if (goodNewPosition > oldPosition) {
+				if (
+					oldCardPositions <= goodNewPosition &&
+					oldCardPositions > oldPosition
+				) {
+					const updateCards = await fetch(
 						`${index.base_url}/cards/${thisCardIds}`,
 						{
 							method: "PATCH",
@@ -109,33 +155,82 @@ const updateListAndCardsPosition = async (
 							}),
 						}
 					);
-					console.log(updateThisCard);
-					if (!updateThisCard.ok) {
+					console.log(updateCards);
+					if (!updateCards.ok) {
 						throw new Error("Problème avec le PATCH " + response.status);
 					}
+					const updateThisCard = await fetch(
+						`${index.base_url}/cards/${cardId}`,
+						{
+							method: "PATCH",
+							body: JSON.stringify({
+								position: goodNewPosition,
+								list_id: newListId,
+							}),
+							headers: {
+								"Content-type": "application/json",
+							},
+						}
+					);
+					console.log(updateThisCard);
+					if (!updateThisCard.ok) {
+						throw new Error("Problème avec le PATCH " + updateThisCard.status);
+					}
+
+					card
+						.querySelector("input[name='position']")
+						.setAttribute("value", `${oldCardPositions - 1}`);
+					document
+						.querySelector(`[data-card-id="${cardId}"]`)
+						.querySelector("input[name='position']")
+						.setAttribute("value", `${goodNewPosition}`);
 					return;
 				}
 			}
 		});
-
-		//! On update la position et la liste de la carte
-		const updateThisCard = await fetch(`${index.base_url}/cards/${cardId}`, {
-			method: "PATCH",
-			body: JSON.stringify({
-				position: newPosition,
-				list_id: newListId,
-			}),
-			headers: {
-				"Content-type": "application/json",
-			},
-		});
-		console.log(updateThisCard);
-		if (!updateThisCard.ok) {
-			throw new Error("Problème avec le PATCH " + updateThisCard.status);
-		}
+		// document.location.reload();
 	} catch (error) {
 		console.error(error);
 	}
+};
+
+const updateCardsPositionAPI = async (
+	cardId,
+	newPosition,
+	newListId,
+	oldPosition
+) => {
+	let goodNewPosition = newPosition - 1;
+
+	if (goodNewPosition === 0) {
+		goodNewPosition = 1;
+	}
+
+	console.log(cardId, oldPosition, goodNewPosition, newListId);
+
+	const updatePosition = await fetch(
+		`${index.base_url}/cards/${cardId}/position/${goodNewPosition}`,
+		{
+			method: "PATCH",
+		}
+	);
+	const updatePositionData = await updatePosition.json();
+	console.log(updatePositionData);
+
+	const updateThisCard = await fetch(`${index.base_url}/cards/${cardId}`, {
+		method: "PATCH",
+		body: JSON.stringify({
+			list_id: newListId,
+		}),
+		headers: {
+			"Content-type": "application/json",
+		},
+	});
+	console.log(updateThisCard);
+	if (!updateThisCard.ok) {
+		throw new Error("Problème avec le PATCH " + updateThisCard.status);
+	}
+	document.location.reload();
 };
 
 export default createDropZone;
