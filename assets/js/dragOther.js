@@ -70,38 +70,192 @@ const updateListAndCardsPosition = async (
 			goodNewPosition = 1;
 		}
 
-		allCardsInList.forEach(async (card) => {
-			const thisCardIds = Number(card.dataset.cardId);
-			const oldCardPositions = Number(
-				card.querySelector("input[name='position']").value
+		const oldList = await fetch(`${index.base_url}/cards/${cardId}`);
+		if (!oldList.ok) {
+			throw new Error("Problème avec le GET " + oldList.status);
+		}
+		const oldListData = await oldList.json();
+
+		if (oldListData.list_id === newListId) {
+			console.log("même liste");
+			allCardsInList.forEach(async (card) => {
+				const thisCardIds = Number(card.dataset.cardId);
+				const oldCardPositions = Number(
+					card.querySelector("input[name='position']").value
+				);
+
+				if (newPosition < oldPosition) {
+					if (
+						oldCardPositions >= newPosition &&
+						oldCardPositions < oldPosition
+					) {
+						const updateCards = await fetch(
+							`${index.base_url}/cards/${thisCardIds}`,
+							{
+								method: "PATCH",
+								headers: {
+									"Content-type": "application/json",
+								},
+								body: JSON.stringify({
+									position: oldCardPositions + 1,
+								}),
+							}
+						);
+						console.log(updateCards);
+						if (!updateCards.ok) {
+							throw new Error("Problème avec le PATCH " + response.status);
+						}
+						const updateThisCard = await fetch(
+							`${index.base_url}/cards/${cardId}`,
+							{
+								method: "PATCH",
+								body: JSON.stringify({
+									position: newPosition,
+								}),
+								headers: {
+									"Content-type": "application/json",
+								},
+							}
+						);
+						console.log(updateThisCard);
+						if (!updateThisCard.ok) {
+							throw new Error(
+								"Problème avec le PATCH " + updateThisCard.status
+							);
+						}
+						//! on met à jour la position de la carte sans refresh
+						card
+							.querySelector("input[name='position']")
+							.setAttribute("value", `${oldCardPositions + 1}`);
+						document
+							.querySelector(`[data-card-id="${cardId}"]`)
+							.querySelector("input[name='position']")
+							.setAttribute("value", `${newPosition}`);
+						return;
+					}
+				}
+
+				if (goodNewPosition > oldPosition) {
+					if (
+						oldCardPositions <= goodNewPosition &&
+						oldCardPositions > oldPosition
+					) {
+						const updateCards = await fetch(
+							`${index.base_url}/cards/${thisCardIds}`,
+							{
+								method: "PATCH",
+								headers: {
+									"Content-type": "application/json",
+								},
+								body: JSON.stringify({
+									position: oldCardPositions - 1,
+								}),
+							}
+						);
+						console.log(updateCards);
+						if (!updateCards.ok) {
+							throw new Error("Problème avec le PATCH " + response.status);
+						}
+						const updateThisCard = await fetch(
+							`${index.base_url}/cards/${cardId}`,
+							{
+								method: "PATCH",
+								body: JSON.stringify({
+									position: goodNewPosition, //
+								}),
+								headers: {
+									"Content-type": "application/json",
+								},
+							}
+						);
+						console.log(updateThisCard);
+						if (!updateThisCard.ok) {
+							throw new Error(
+								"Problème avec le PATCH " + updateThisCard.status
+							);
+						}
+
+						card
+							.querySelector("input[name='position']")
+							.setAttribute("value", `${oldCardPositions - 1}`);
+						document
+							.querySelector(`[data-card-id="${cardId}"]`)
+							.querySelector("input[name='position']")
+							.setAttribute("value", `${goodNewPosition}`);
+						return;
+					}
+				}
+			});
+		}
+		if (oldListData.list_id !== newListId) {
+			console.log("autre liste");
+
+			const oldList = document.querySelector(
+				`[data-list-id="${oldListData.list_id}"]`
 			);
+			const allCardsInOldList = oldList.querySelectorAll("[data-card-id]");
 
-			// if (goodNewPosition < oldPosition) {
-			// 	if (
-			// 		oldCardPositions >= goodNewPosition &&
-			// 		oldCardPositions < oldPosition
-			// 	) {
-			// 		console.log(
-			// 			cardId,
-			// 			oldCardPositions,
-			// 			oldPosition,
-			// 			goodNewPosition,
-			// 			newPosition
-			// 		);
-			// 	}
-			// }
-
-			if (newPosition < oldPosition) {
-				if (oldCardPositions >= newPosition && oldCardPositions < oldPosition) {
+			const updateThisCard = await fetch(`${index.base_url}/cards/${cardId}`, {
+				method: "PATCH",
+				body: JSON.stringify({
+					list_id: newListId,
+				}),
+				headers: {
+					"Content-type": "application/json",
+				},
+			});
+			console.log(updateThisCard);
+			if (!updateThisCard.ok) {
+				throw new Error("Problème avec le PATCH " + updateThisCard.status);
+			}
+			//* ANCIENNE LISTE
+			allCardsInOldList.forEach(async (card) => {
+				const thisCardId = Number(card.dataset.cardId);
+				const oldCardPosition = Number(
+					card.querySelector("input[name='position']").value
+				);
+				//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				if (oldCardPosition > oldPosition) {
 					const updateCards = await fetch(
-						`${index.base_url}/cards/${thisCardIds}`,
+						`${index.base_url}/cards/${thisCardId}`,
 						{
 							method: "PATCH",
 							headers: {
 								"Content-type": "application/json",
 							},
 							body: JSON.stringify({
-								position: oldCardPositions + 1,
+								position: oldCardPosition - 1,
+							}),
+						}
+					);
+					console.log(updateCards);
+					if (!updateCards.ok) {
+						throw new Error("Problème avec le PATCH " + response.status);
+					}
+				}
+				//! on met à jour la position de la carte sans refresh
+				card
+					.querySelector("input[name='position']")
+					.setAttribute("value", `${oldCardPosition - 1}`);
+			});
+
+			//* NOUVELLE LISTE
+			allCardsInList.forEach(async (card) => {
+				const thisCardId = Number(card.dataset.cardId);
+				const oldCardPosition = Number(
+					card.querySelector("input[name='position']").value
+				);
+
+				if (oldCardPosition >= newPosition) {
+					const updateCards = await fetch(
+						`${index.base_url}/cards/${thisCardId}`,
+						{
+							method: "PATCH",
+							headers: {
+								"Content-type": "application/json",
+							},
+							body: JSON.stringify({
+								position: oldCardPosition + 1,
 							}),
 						}
 					);
@@ -115,7 +269,6 @@ const updateListAndCardsPosition = async (
 							method: "PATCH",
 							body: JSON.stringify({
 								position: newPosition,
-								list_id: newListId,
 							}),
 							headers: {
 								"Content-type": "application/json",
@@ -129,65 +282,17 @@ const updateListAndCardsPosition = async (
 					//! on met à jour la position de la carte sans refresh
 					card
 						.querySelector("input[name='position']")
-						.setAttribute("value", `${oldCardPositions + 1}`);
+						.setAttribute("value", `${oldCardPosition + 1}`);
 					document
 						.querySelector(`[data-card-id="${cardId}"]`)
 						.querySelector("input[name='position']")
 						.setAttribute("value", `${newPosition}`);
 					return;
 				}
-			}
+			});
+			return;
+		}
 
-			if (goodNewPosition > oldPosition) {
-				if (
-					oldCardPositions <= goodNewPosition &&
-					oldCardPositions > oldPosition
-				) {
-					const updateCards = await fetch(
-						`${index.base_url}/cards/${thisCardIds}`,
-						{
-							method: "PATCH",
-							headers: {
-								"Content-type": "application/json",
-							},
-							body: JSON.stringify({
-								position: oldCardPositions - 1,
-							}),
-						}
-					);
-					console.log(updateCards);
-					if (!updateCards.ok) {
-						throw new Error("Problème avec le PATCH " + response.status);
-					}
-					const updateThisCard = await fetch(
-						`${index.base_url}/cards/${cardId}`,
-						{
-							method: "PATCH",
-							body: JSON.stringify({
-								position: goodNewPosition,
-								list_id: newListId,
-							}),
-							headers: {
-								"Content-type": "application/json",
-							},
-						}
-					);
-					console.log(updateThisCard);
-					if (!updateThisCard.ok) {
-						throw new Error("Problème avec le PATCH " + updateThisCard.status);
-					}
-
-					card
-						.querySelector("input[name='position']")
-						.setAttribute("value", `${oldCardPositions - 1}`);
-					document
-						.querySelector(`[data-card-id="${cardId}"]`)
-						.querySelector("input[name='position']")
-						.setAttribute("value", `${goodNewPosition}`);
-					return;
-				}
-			}
-		});
 		// document.location.reload();
 	} catch (error) {
 		console.error(error);

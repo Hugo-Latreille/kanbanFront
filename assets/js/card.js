@@ -261,4 +261,7 @@ export default card;
 //? nouvelle < ancienne -> position >= nouvelle && < ancienne -> position +1 -> update position chacune de ces cartes puis la carte
 //? nouvelle > ancienne -> position > ancienne && <= nouvelle -> position -1 -> update ces cartes puis la carte
 
-//?
+//?Changement de liste :
+//? test : update d'abord la dite carte avec nouvelle position / listId puis
+//? ancienne liste : -1 toutes les cartes > ancienne position
+//? nouvelle liste : + 1 toutes les cartes > nouvelle position
