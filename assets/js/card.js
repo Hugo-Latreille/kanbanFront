@@ -114,6 +114,7 @@ const card = {
 
 		//?Init drag&drop pour chaque carte et transmission d'info
 		const thisCard = document.querySelector(`[data-card-id="${dataId}"]`);
+
 		// .querySelector(".columns");
 		const thisCardId = thisCard.dataset.cardId;
 		thisCard.addEventListener("dragstart", (e) => {
@@ -251,17 +252,3 @@ const card = {
 };
 
 export default card;
-
-//* update de toutes les positions : back ok
-//* SINON
-//* nouvelle < ancienne : on incrémente de 1 la position de toutes les autres cartes de la même liste dont la position est >= nouvelle ET < à l'ancienne
-//* nouvelle > ancienne : on décrémente de 1 la position de toutes les autres cartes de la même liste dont la position est > ancienne et <= nouvelle
-//* On update la position de cette carte
-
-//? nouvelle < ancienne -> position >= nouvelle && < ancienne -> position +1 -> update position chacune de ces cartes puis la carte
-//? nouvelle > ancienne -> position > ancienne && <= nouvelle -> position -1 -> update ces cartes puis la carte
-
-//?Changement de liste :
-//? test : update d'abord la dite carte avec nouvelle position / listId puis
-//? ancienne liste : -1 toutes les cartes > ancienne position
-//? nouvelle liste : + 1 toutes les cartes > nouvelle position

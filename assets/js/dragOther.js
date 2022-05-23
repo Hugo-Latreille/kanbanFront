@@ -40,18 +40,35 @@ const createDropZone = () => {
 			? dropZone.parentElement
 			: dropZone;
 
-		updateListAndCardsPosition(
-			newListId,
-			cardId,
-			dropZoneIndex,
-			thisCardPosition
-		);
+		// updateListAndCardsPosition(
+		// 	newListId,
+		// 	cardId,
+		// 	dropZoneIndex,
+		// 	thisCardPosition
+		// );
+
+		updateListAndCardsPositionSimpler(newListId, cardId, dropZoneIndex);
+
 		// updateCardsPositionAPI(cardId, dropZoneIndex, newListId, thisCardPosition);
 		insertAfter.after(droppedCardElement);
 	});
 
 	return dropZone;
 };
+
+//* update de toutes les positions dans une même liste : back ok
+//* SINON
+//* nouvelle < ancienne : on incrémente de 1 la position de toutes les autres cartes de la même liste dont la position est >= nouvelle ET < à l'ancienne
+//* nouvelle > ancienne : on décrémente de 1 la position de toutes les autres cartes de la même liste dont la position est > ancienne et <= nouvelle
+//* On update la position de cette carte
+
+//? nouvelle < ancienne -> position >= nouvelle && < ancienne -> position +1 -> update position chacune de ces cartes puis la carte
+//? nouvelle > ancienne -> position > ancienne && <= nouvelle -> position -1 -> update ces cartes puis la carte
+
+//?Changement de liste :
+//? test : update d'abord la dite carte avec nouvelle position / listId puis
+//? ancienne liste : -1 toutes les cartes > ancienne position
+//? nouvelle liste : + 1 toutes les cartes >= nouvelle position
 
 const updateListAndCardsPosition = async (
 	newListId,
@@ -60,12 +77,10 @@ const updateListAndCardsPosition = async (
 	oldPosition
 ) => {
 	try {
-		//!on update toutes les positions de cette liste
 		const newList = document.querySelector(`[data-list-id="${newListId}"]`);
 		const allCardsInList = newList.querySelectorAll("[data-card-id]");
 
 		let goodNewPosition = newPosition - 1;
-
 		if (goodNewPosition === 0) {
 			goodNewPosition = 1;
 		}
@@ -297,6 +312,67 @@ const updateListAndCardsPosition = async (
 	}
 };
 
+const updateListAndCardsPositionSimpler = async (
+	newListId,
+	cardId,
+	newPosition
+) => {
+	const updateThisCardList = await fetch(`${index.base_url}/cards/${cardId}`, {
+		method: "PATCH",
+		body: JSON.stringify({
+			list_id: newListId,
+		}),
+		headers: {
+			"Content-type": "application/json",
+		},
+	});
+
+	const newList = document.querySelector(`[data-list-id="${newListId}"]`);
+	const allCardsInNewList = newList.querySelectorAll(".box");
+
+	const thisCard = document.querySelector(`[data-card-id="${cardId}"]`);
+	const oldListId = Number(
+		thisCard.querySelector("input[name='list-id']").value
+	);
+
+	const oldList = document.querySelector(`[data-list-id="${oldListId}"]`);
+	const allCardsInOldList = oldList.querySelectorAll("[data-card-id]");
+
+	allCardsInOldList.forEach(async (oldCard, i) => {
+		console.log(
+			`je change la carte ${oldCard.dataset.cardId} pour lui mettre la position ${i} et lid de liste ${oldListId}`
+		);
+
+		await fetch(`${index.base_url}/cards/${oldCard.dataset.cardId}`, {
+			method: "PATCH",
+			body: JSON.stringify({
+				position: i + 1,
+			}),
+			headers: {
+				"Content-type": "application/json",
+			},
+		});
+	});
+
+	allCardsInNewList.forEach(async (newCard, i) => {
+		console.log(
+			`je change la carte ${
+				newCard.dataset.cardId
+			} pour lui mettre la position ${i + 1} et lid de liste ${newListId}`
+		);
+		await fetch(`${index.base_url}/cards/${newCard.dataset.cardId}`, {
+			method: "PATCH",
+			body: JSON.stringify({
+				position: i + 1,
+			}),
+			headers: {
+				"Content-type": "application/json",
+			},
+		});
+	});
+};
+
+//* Update des positions via l'API, dans une même liste
 const updateCardsPositionAPI = async (
 	cardId,
 	newPosition,

@@ -1,0 +1,24 @@
+{
+	"name": "s07-okanban-front-hugo-latreille",
+	"version": "1.0.0",
+	"description": "Pour ce projet, nous n'allons pas utiliser de serveur !",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "browserify -e src/index.js -o assets/js/bundle.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/O-clock-Cassini/S07-oKanban-front-Hugo-Latreille.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/O-clock-Cassini/S07-oKanban-front-Hugo-Latreille/issues"
+	},
+	"homepage": "https://github.com/O-clock-Cassini/S07-oKanban-front-Hugo-Latreille#readme",
+	"dependencies": {
+		"browserify": "^17.0.0"
+	}
+}
