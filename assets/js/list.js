@@ -136,6 +136,25 @@ const list = {
 			console.error(error);
 		}
 	},
+	async updateLists() {
+		const lists = document.querySelectorAll(".column[data-list-id]");
+
+		lists.forEach(async (list, i) => {
+			const listId = list.dataset.listId;
+
+			const headers = new Headers();
+			headers.append("Content-Type", "application/json");
+
+			await fetch(`${index.base_url}/lists/${listId}`, {
+				method: "PATCH",
+				// je transforme mon body en JSON
+				body: JSON.stringify({
+					position: i + 1,
+				}),
+				headers,
+			});
+		});
+	},
 };
 
 export default list;

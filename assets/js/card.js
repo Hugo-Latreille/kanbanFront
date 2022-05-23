@@ -115,7 +115,6 @@ const card = {
 		//?Init drag&drop pour chaque carte et transmission d'info
 		const thisCard = document.querySelector(`[data-card-id="${dataId}"]`);
 
-		// .querySelector(".columns");
 		const thisCardId = thisCard.dataset.cardId;
 		thisCard.addEventListener("dragstart", (e) => {
 			e.dataTransfer.setData("text/plain", thisCardId);

@@ -98,9 +98,18 @@ const index = {
 
 				card.getCardsFromAPI(oneList.id);
 			});
+			index.dragListsWithSortable();
 		} catch (error) {
 			console.log(error);
 		}
+	},
+	async dragListsWithSortable() {
+		const listsContainer = document.querySelector(".card-lists");
+
+		new Sortable(listsContainer, {
+			filter: ".list-btn",
+			onEnd: list.updateLists,
+		});
 	},
 };
 

@@ -19,6 +19,7 @@
 	},
 	"homepage": "https://github.com/O-clock-Cassini/S07-oKanban-front-Hugo-Latreille#readme",
 	"dependencies": {
-		"browserify": "^17.0.0"
+		"browserify": "^17.0.0",
+		"sortable": "^2.0.0"
 	}
 }
