@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "browserify -e src/index.js -o assets/js/bundle.js"
+		"build": "browserify src/index.js -p esmify > assets/js/bundle.js"
 	},
 	"repository": {
 		"type": "git",
@@ -21,5 +21,8 @@
 	"dependencies": {
 		"browserify": "^17.0.0",
 		"sortable": "^2.0.0"
+	},
+	"devDependencies": {
+		"esmify": "^2.1.1"
 	}
 }

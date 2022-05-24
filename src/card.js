@@ -114,11 +114,10 @@ const card = {
 
 		//?Init drag&drop pour chaque carte et transmission d'info
 		const thisCard = document.querySelector(`[data-card-id="${dataId}"]`);
-
 		const thisCardId = thisCard.dataset.cardId;
-		thisCard.addEventListener("dragstart", (e) => {
-			e.dataTransfer.setData("text/plain", thisCardId);
-		});
+		// thisCard.addEventListener("dragstart", (e) => {
+		// 	e.dataTransfer.setData("text/plain", thisCardId);
+		// });
 
 		//? Create TopDropZone
 		const topDropZone = createDropZone();
@@ -132,6 +131,7 @@ const card = {
 			tag.addEventListener("dblclick", tags.showAddTagToCardModal);
 		});
 	},
+
 	editCard(e) {
 		const thisCard = e.target.closest(".box");
 		const title = thisCard.querySelector(".column");

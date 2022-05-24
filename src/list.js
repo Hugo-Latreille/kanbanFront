@@ -1,5 +1,5 @@
 import card from "./card.js";
-import createDropZone from "./dragOther.js";
+import createDropZone, { handleCardDragFromSortable } from "./dragOther.js";
 import index from "./index.js";
 
 const list = {
@@ -26,6 +26,15 @@ const list = {
 			.addEventListener("click", card.showAddCardModal);
 
 		clone.querySelector(".column").dataset.listId = listId;
+
+		//?sortable
+		const cardContainer = clone.querySelector(".panel-block");
+
+		new Sortable(cardContainer, {
+			group: "cards",
+			onEnd: handleCardDragFromSortable,
+		});
+
 		lastColumn.before(clone);
 
 		//? Create TopDropZone
@@ -34,6 +43,7 @@ const list = {
 		const topDropZone = createDropZone();
 		cardsContainer.appendChild(topDropZone);
 	},
+
 	async handleAddListForm(e) {
 		try {
 			e.preventDefault();

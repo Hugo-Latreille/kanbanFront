@@ -8,50 +8,50 @@ const createDropZone = () => {
 		`<div class="dropZone"></div>`
 	).children[0];
 
-	dropZone.addEventListener("dragover", (e) => {
-		e.preventDefault();
-		dropZone.classList.add("is-active");
-	});
+	// dropZone.addEventListener("dragover", (e) => {
+	// 	e.preventDefault();
+	// 	dropZone.classList.add("is-active");
+	// });
 
-	dropZone.addEventListener("dragleave", () => {
-		dropZone.classList.remove("is-active");
-	});
-	dropZone.addEventListener("drop", (e) => {
-		e.preventDefault();
-		dropZone.classList.remove("is-active");
-		const thisList = dropZone.closest("[data-list-id]");
-		const newListId = Number(thisList.dataset.listId);
-		const dropZonesInList = [...thisList.querySelectorAll(".dropZone")];
-		const dropZoneIndex = dropZonesInList.indexOf(dropZone) + 1;
-		const cardId = Number(e.dataTransfer.getData("text/plain"));
+	// dropZone.addEventListener("dragleave", () => {
+	// 	dropZone.classList.remove("is-active");
+	// });
+	// dropZone.addEventListener("drop", (e) => {
+	// 	e.preventDefault();
+	// 	dropZone.classList.remove("is-active");
+	// 	const thisList = dropZone.closest("[data-list-id]");
+	// 	const newListId = Number(thisList.dataset.listId);
+	// 	const dropZonesInList = [...thisList.querySelectorAll(".dropZone")];
+	// 	const dropZoneIndex = dropZonesInList.indexOf(dropZone) + 1;
+	// 	const cardId = Number(e.dataTransfer.getData("text/plain"));
 
-		const droppedCardElement = document.querySelector(
-			`[data-card-id="${cardId}"]`
-		).parentElement;
-		const thisCardPosition = Number(
-			document
-				.querySelector(`[data-card-id="${cardId}"]`)
-				.querySelector("input[name='position']").value
-		);
+	// 	const droppedCardElement = document.querySelector(
+	// 		`[data-card-id="${cardId}"]`
+	// 	).parentElement;
+	// 	const thisCardPosition = Number(
+	// 		document
+	// 			.querySelector(`[data-card-id="${cardId}"]`)
+	// 			.querySelector("input[name='position']").value
+	// 	);
 
-		const insertAfter = dropZone.parentElement.classList.contains(
-			"cardWithDropZone"
-		)
-			? dropZone.parentElement
-			: dropZone;
+	// 	const insertAfter = dropZone.parentElement.classList.contains(
+	// 		"cardWithDropZone"
+	// 	)
+	// 		? dropZone.parentElement
+	// 		: dropZone;
 
-		// updateListAndCardsPosition(
-		// 	newListId,
-		// 	cardId,
-		// 	dropZoneIndex,
-		// 	thisCardPosition
-		// );
+	// updateListAndCardsPosition(
+	// 	newListId,
+	// 	cardId,
+	// 	dropZoneIndex,
+	// 	thisCardPosition
+	// );
 
-		updateListAndCardsPositionSimpler(newListId, cardId, dropZoneIndex);
+	// updateListAndCardsPositionSimpler(newListId, cardId, dropZoneIndex);
 
-		// updateCardsPositionAPI(cardId, dropZoneIndex, newListId, thisCardPosition);
-		insertAfter.after(droppedCardElement);
-	});
+	// updateCardsPositionAPI(cardId, dropZoneIndex, newListId, thisCardPosition);
+	// insertAfter.after(droppedCardElement);
+	// });
 
 	return dropZone;
 };
@@ -312,10 +312,33 @@ const updateListAndCardsPosition = async (
 	}
 };
 
+export const handleCardDragFromSortable = (e) => {
+	const newListId = e.to.closest(".column").dataset.listId;
+	const oldListId = e.from.closest(".column").dataset.listId;
+	const thisCardId = e.item.querySelector(".box").dataset.cardId;
+	updateListAndCardsPositionSimpler(newListId, oldListId, thisCardId);
+};
+
+export const handleListDragFromSortable = async (e) => {
+	const lists = document.querySelectorAll(".column[data-list-id]");
+	lists.forEach(async (list, i) => {
+		const listId = list.dataset.listId;
+		await fetch(`${index.base_url}/lists/${listId}`, {
+			method: "PATCH",
+			body: JSON.stringify({
+				position: i + 1,
+			}),
+			headers: {
+				"Content-type": "application/json",
+			},
+		});
+	});
+};
+
 const updateListAndCardsPositionSimpler = async (
 	newListId,
-	cardId,
-	newPosition
+	oldListId,
+	cardId
 ) => {
 	const updateThisCardList = await fetch(`${index.base_url}/cards/${cardId}`, {
 		method: "PATCH",
@@ -330,10 +353,10 @@ const updateListAndCardsPositionSimpler = async (
 	const newList = document.querySelector(`[data-list-id="${newListId}"]`);
 	const allCardsInNewList = newList.querySelectorAll(".box");
 
-	const thisCard = document.querySelector(`[data-card-id="${cardId}"]`);
-	const oldListId = Number(
-		thisCard.querySelector("input[name='list-id']").value
-	);
+	// const thisCard = document.querySelector(`[data-card-id="${cardId}"]`);
+	// const oldListId = Number(
+	// 	thisCard.querySelector("input[name='list-id']").value
+	// );
 
 	const oldList = document.querySelector(`[data-list-id="${oldListId}"]`);
 	const allCardsInOldList = oldList.querySelectorAll("[data-card-id]");

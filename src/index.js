@@ -1,6 +1,7 @@
 import list from "./list.js";
 import card from "./card.js";
 import tags from "./tags.js";
+import { handleListDragFromSortable } from "./dragOther.js";
 
 const index = {
 	init: function () {
@@ -98,6 +99,7 @@ const index = {
 
 				card.getCardsFromAPI(oneList.id);
 			});
+
 			index.dragListsWithSortable();
 		} catch (error) {
 			console.log(error);
@@ -105,10 +107,12 @@ const index = {
 	},
 	async dragListsWithSortable() {
 		const listsContainer = document.querySelector(".card-lists");
+		const test = document.querySelectorAll(".panel-heading");
+		console.log(test);
 
 		new Sortable(listsContainer, {
 			filter: ".list-btn",
-			onEnd: list.updateLists,
+			onEnd: handleListDragFromSortable,
 		});
 	},
 };
